@@ -92,12 +92,11 @@ document.addEventListener("DOMContentLoaded", (event) => {
       } // a child was already DFSed and reached the goal( child altered the dfsFound var )
       else if (road == distination) {
         // GOAL REACHED
-        console.log("founded");
+
         visited.add(distination);
         dfsFound = 1;
         break;
-      } 
-      else if (!visited.has(road)) {
+      } else if (!visited.has(road)) {
         // first time to explore
         dfs(road, distination, visited);
       }
@@ -108,21 +107,20 @@ document.addEventListener("DOMContentLoaded", (event) => {
   let bfsFound = false;
   function bfs(start, distination) {
     // Create a queueueue and add our initial start in it
-    console.log("bfsFound=" + bfsFound);
+
     let queue = [];
-    console.log("start bfs");
+
     queue.push(start);
     visited.add(start);
     while (queue.length != 0) {
       let node = queue.shift();
-      console.log(node);
+
       if (start == distination) {
         bfsFound = true;
-        console.log("start=dis");
+
         break;
       }
       if (bfsFound) {
-        console.log("found");
         break;
       }
       for (const child of roads[node]) {
@@ -130,7 +128,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
           visited.add(child);
           queue.push(child);
         }
-        
+
         if (child == distination) {
           bfsFound = true;
           break;
@@ -160,21 +158,16 @@ document.addEventListener("DOMContentLoaded", (event) => {
     const start = document.getElementById("startCities").value;
     const distination = document.getElementById("distCities").value;
     const chosenAlgorithm = document.getElementById("algorithem").value;
-
     visited.clear();
     if (chosenAlgorithm == "dfs") {
       dfsFound = 0;
       const results = dfs(start, distination);
-      console.log(results);
       activatePath(results);
-    } 
-    else if (chosenAlgorithm == "bfs") {
+    } else if (chosenAlgorithm == "bfs") {
       bfsFound = 0;
       const results = bfs(start, distination);
-      console.log(results);
       activatePath(results);
     }
-
     e.preventDefault();
   });
 });
