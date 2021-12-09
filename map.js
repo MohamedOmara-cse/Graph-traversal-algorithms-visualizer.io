@@ -1,4 +1,14 @@
 document.addEventListener("DOMContentLoaded", (event) => {
+  let reachedDistination = false;
+  let visited = new Set();
+
+  const config = {
+    nodeActiveColor: "blue",
+    nodeInactiveColor: "yellow",
+    lineActiveColor: "gray",
+    lineInActiveColor: "black",
+  };
+
   const roads = {
     shibin: [
       "elshohada",
@@ -38,7 +48,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
 
   const svg = document.getElementById("svg");
 
-  function draw() {
+  (function draw() {
     for (s in roads) {
       const x = document.getElementById(`${s}`).cx.animVal.value;
       const y = document.getElementById(`${s}`).cy.animVal.value;
@@ -74,53 +84,42 @@ document.addEventListener("DOMContentLoaded", (event) => {
         svg.appendChild(line);
       }
     }
-  }
-
-  draw();
-
-  let dfsFound = 0;
-  let visited = new Set();
+  })();
 
   function dfs(start, distination) {
+    console.log(start);
     visited.add(start);
+    delayBy(() => {
+      colorizeNode(start, config.nodeActiveColor);
+    }, 1);
 
-    for (const road of roads[start]) {
-      if (start == distination) dfsFound = true;
+    if (start == distination) return true;
 
-      if (dfsFound == 1) {
-        break;
-      } // a child was already DFSed and reached the goal( child altered the dfsFound var )
-      else if (road == distination) {
-        // GOAL REACHED
-
-        visited.add(distination);
-        dfsFound = 1;
-        break;
-      } else if (!visited.has(road)) {
-        // first time to explore
-        dfs(road, distination, visited);
+    for (const child of roads[start]) {
+      if (visited.has(child)) continue;
+      else {
+        visited.add(child);
+        if (dfs(child, distination, visited)) return true;
       }
     }
-    return visited;
   }
 
-  let bfsFound = false;
   function bfs(start, distination) {
-    // Create a queueueue and add our initial start in it
-
     let queue = [];
 
     queue.push(start);
     visited.add(start);
+    colorizeNode(child, config.nodeActiveColor);
+
     while (queue.length != 0) {
       let node = queue.shift();
 
       if (start == distination) {
-        bfsFound = true;
+        reachedDistination = true;
 
         break;
       }
-      if (bfsFound) {
+      if (reachedDistination) {
         break;
       }
       for (const child of roads[node]) {
@@ -130,7 +129,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
         }
 
         if (child == distination) {
-          bfsFound = true;
+          reachedDistination = true;
           break;
         }
       }
@@ -138,20 +137,23 @@ document.addEventListener("DOMContentLoaded", (event) => {
     return visited;
   }
 
-  function activatePath(visited) {
-    let i = 0;
-    visited.forEach((element) => {
-      i += 1;
-      setTimeout(() => {
-        document.querySelector(`#${element}`).style.fill = "red";
-      }, i * 1000);
-    });
-    visited.forEach((element) => {
-      setTimeout(() => {
-        document.querySelector(`#${element}`).style.fill = "yellow";
-      }, (i + 1) * 1000);
-    });
+  function colorizeNode(id, color) {
+    document.querySelector(`#${id}`).style.fill = color;
   }
+
+  function debounce() {
+    let counter = 0;
+
+    return function (func, delay) {
+      counter++;
+
+      setTimeout(() => {
+        func();
+      }, delay * 1000 * counter);
+    };
+  }
+
+  const delayBy = debounce();
 
   document.getElementById("form").addEventListener("submit", (e) => {
     //Getting the form values on submit
@@ -159,15 +161,20 @@ document.addEventListener("DOMContentLoaded", (event) => {
     const distination = document.getElementById("distCities").value;
     const chosenAlgorithm = document.getElementById("algorithem").value;
     visited.clear();
-    if (chosenAlgorithm == "dfs") {
-      dfsFound = 0;
-      const results = dfs(start, distination);
-      activatePath(results);
-    } else if (chosenAlgorithm == "bfs") {
-      bfsFound = 0;
-      const results = bfs(start, distination);
-      activatePath(results);
+
+    reachedDistination = 0;
+
+    switch (chosenAlgorithm) {
+      case "dfs":
+        dfs(start, distination);
+        break;
+      case "bfs":
+        bfs(start, distination);
+        break;
+      default:
+        break;
     }
+
     e.preventDefault();
   });
 });

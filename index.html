@@ -1,6 +1,9 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
   <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" > 
+    <title> Graph Traversal Algorithms </title>
+    <meta charset="UTF-8">
     <script src="map.js"></script>
     <style>
       svg {
@@ -30,11 +33,11 @@
   <body>
     <h1>My first SVG</h1>
     <form id="form">
-      <label>Start :</label>
+      <label for="startCities">Start :</label>
       <select id="startCities">
-        <option value="shibin" selected>Shibin</option>
+        <option value="shibin" >Shibin</option>
         <option value="sirs">Sirs</option>
-        <option value="menouf">Menouf</option>
+        <option value="menouf" selected>Menouf</option>
         <option value="elbagour">Elbagour</option>
         <option value="elshohada">Elshohada</option>
         <option value="elsadat">Elsadat</option>
@@ -43,20 +46,20 @@
         <option value="ashmon">Ashmon</option>
         <option value="tala">Tala</option>
       </select>
-      <label>Distination :</label>
+      <label for="distCities">Distination :</label>
       <select id="distCities">
-        <option value="shibin" selected>Shibin</option>
+        <option value="shibin">Shibin</option>
         <option value="sirs">Sirs</option>
         <option value="menouf">Menouf</option>
         <option value="elbagour">Elbagour</option>
         <option value="elshohada">Elshohada</option>
         <option value="elsadat">Elsadat</option>
         <option value="quesna">quesna</option>
-        <option value="berket">Berket</option>
+        <option value="berket" selected>Berket</option>
         <option value="ashmon">Ashmon</option>
         <option value="tala">Tala</option>
       </select>
-      <label>Algorithem :</label>
+      <label for="algorithem">Algorithem :</label>
       <select id="algorithem">
         <option value="dfs" selected>DFS</option>
         <option value="bfs">BFS</option>
