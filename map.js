@@ -1,14 +1,13 @@
-document.addEventListener("DOMContentLoaded", (event) => {
-	let visited = new Set();
+const data = {
 
-	const config = {
+	config: {
 		nodeActiveColor: "red",
 		nodeInactiveColor: "yellow",
 		lineActiveColor: "gray",
 		lineInActiveColor: "black",
-	};
+	},
 
-	const roads = {
+	roads: {
 		shibin: ["shohada", "menouf", "tala", "elbagour", "berket", "ashmon", "quesna", "elsadat"],
 		sirs: ["menouf", "elbagour"],
 		menouf: ["sirs", "shibin", "elsadat"],
@@ -19,123 +18,135 @@ document.addEventListener("DOMContentLoaded", (event) => {
 		quesna: ["shibin"],
 		tala: ["shibin"],
 		berket: ["shibin"],
-	};
+	},
 
-	const mapRoads = {
+	mapRoads: {
 		shibin: ["menouf", "tala", "elbagour", "shohada", "elsadat", "berket", "ashmon", "quesna"],
 		sirs: ["menouf", "elbagour"],
 		elsadat: ["menouf"],
-	};
+	},
+}
+
+const { roads, mapRoads, config } = data;
+let visited = new Set();
+let timeout;
+
+const Utils = {
+
+	colorizeNode: function (id, color) {
+		document.querySelector(`#${id}`).style.fill = color;
+	},
+
+	resetNodes: function () {
+		for (let i = 0; i < timeout; i++) clearTimeout(i);
+		for (node of visited) this.colorizeNode(node, config.nodeInactiveColor);
+	},
+
+	debounce: function () {
+		let counter = 0;
+
+		function resetCounter() {
+			counter = 0;
+		}
+
+		function delayBy(callback, delay) {
+			counter++;
+			timeout = setTimeout(() => {
+				callback();
+			}, delay * 1000 * counter);
+		};
+
+		return {
+			resetCounter,
+			delayBy
+		}
+	}
+}
+
+const { delayBy, resetCounter } = Utils.debounce();
+
+const Traversals = {
+
+	dfs: function (start, distination) {
+		visited.add(start);
+		delayBy(() => Utils.colorizeNode(start, config.nodeActiveColor), 1);
+		if (start == distination) return true;
+		for (const child of roads[start])
+			if (!visited.has(child)) {
+				visited.add(child);
+				if (this.dfs(child, distination, visited)) return true;
+			}
+	},
+
+	bfs: function (start, distination) {
+		const queue = [start];
+		while (queue.length) {
+			const node = queue.shift();
+			visited.add(node);
+			delayBy(() => Utils.colorizeNode(node, config.nodeActiveColor), 1);
+			if (node == distination) return true;
+			for (const child of roads[node])
+				if (!visited.has(child)) {
+					visited.add(child);
+					queue.push(child);
+				}
+		}
+	}
+}
+
+document.addEventListener("DOMContentLoaded", (event) => {
 
 	const svg = document.getElementById("svg");
 
 	(function draw() {
-		for (s in roads) {
-			const x = document.getElementById(`${s}`).cx.animVal.value;
-			const y = document.getElementById(`${s}`).cy.animVal.value;
+		for (node in roads) {
+			const x = document.getElementById(`${node}`).cx.animVal.value;
+			const y = document.getElementById(`${node}`).cy.animVal.value;
 			const name = document.createElementNS("http://www.w3.org/2000/svg", "text");
 			name.setAttribute("x", `${x + 10}`);
 			name.setAttribute("y", `${y + 15}`);
-			name.innerHTML = s;
+			name.innerHTML = node;
 			svg.appendChild(name);
 		}
 		for (i in mapRoads) {
-			const xStart = document.getElementById(`${i}`).cx.animVal.value;
-			const yStart = document.getElementById(`${i}`).cy.animVal.value;
+			const Start = document.getElementById(`${i}`);
+			const xStart = Start.cx.animVal.value;
+			const yStart = Start.cy.animVal.value;
 
 			for (j in mapRoads[i]) {
-				const xDist = document.getElementById(`${mapRoads[i][j]}`).cx.animVal.value;
-				const yDist = document.getElementById(`${mapRoads[i][j]}`).cy.animVal.value;
+				const Dist = document.getElementById(`${mapRoads[i][j]}`);
+				const xDist = Dist.cx.animVal.value;
+				const yDist = Dist.cy.animVal.value;
+
+				const lineConfig = {
+					x1: xStart,
+					x2: xDist,
+					y1: yStart,
+					y2: yDist,
+					stroke: "black",
+					strokeWidth: "1px",
+				};
+
 				const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
 
-				line.setAttribute("x1", `${xStart}`);
-				line.setAttribute("y1", `${yStart}`);
-				line.setAttribute("x2", `${xDist}`);
-				line.setAttribute("y2", `${yDist}`);
-				line.setAttribute("stroke", "black");
-				line.setAttribute("stroke-width", "2px");
+				Object.keys(lineConfig).forEach((attribute) => {
+					line.setAttribute(attribute, `${lineConfig[attribute]}`);
+				});
+
 				svg.appendChild(line);
 			}
 		}
 	})();
 
-	function dfs(start, distination) {
-		visited.add(start);
-		delayBy(() => colorizeNode(start, undefined, config.nodeActiveColor), 1);
-		if (start == distination) return true;
-		for (const child of roads[start])
-			if (!visited.has(child)) {
-				visited.add(child);
-				if (dfs(child, distination, visited)) return true;
-			}
-	}
-
-	function bfs(start, destination) {
-		let queue = [];
-
-		queue.push(start);
-		visited.add(start);
-		delayBy(() => colorizeNode(start, undefined, config.nodeActiveColor), 1);
-
-		while (queue.length != 0) {
-			let node = queue.shift();
-			if (start == destination) return true;
-			for (const child of roads[node])
-				if (!visited.has(child)) {
-					visited.add(child);
-					delayBy(() => colorizeNode(child, undefined, config.nodeActiveColor), 1);
-
-					if (child == destination) return;
-					else queue.push(child);
-				}
-		}
-	}
-
-	function colorizeNode(id, prop = "fill", color) {
-		document.querySelector(`#${id}`).style[prop] = color;
-	}
-	let timeout;
-	function debounce() {
-		let counter = 0;
-		return function (func, delay) {
-			counter++;
-			timeout = setTimeout(() => {
-				func();
-			}, delay * 1000 * counter);
-		};
-	}
-
-	let delayBy;
-
-	function deColorizeNode() {
-    let i=0;
-		while(i <=timeout){
-    clearTimeout(i);
-    i++
-    }
-		for (node of visited) {
-			document.querySelector(`#${node}`).style["fill"] = config.nodeInactiveColor;
-		}
-	}
 
 	document.getElementById("form").addEventListener("submit", (e) => {
 		const start = document.getElementById("startCities").value;
 		const distination = document.getElementById("distCities").value;
 		const chosenAlgorithm = document.getElementById("algorithem").value;
-		delayBy = debounce();
-		console.log(visited);
-		deColorizeNode();
+		Utils.resetNodes();
 		visited.clear();
-
-		switch (chosenAlgorithm) {
-			case "dfs":
-				dfs(start, distination);
-				break;
-			case "bfs":
-				bfs(start, distination);
-				break;
-		}
-
+		resetCounter();
+		Traversals[chosenAlgorithm](start, distination)
 		e.preventDefault();
 	});
 });
