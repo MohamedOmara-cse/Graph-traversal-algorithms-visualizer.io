@@ -1,149 +1,141 @@
-document.addEventListener('DOMContentLoaded', (event) => {
-const roads={
-    'shibin':['elshohada','menouf','tala','elbagour','berket','ashmon','quesna','elsadat'],
-    'sirs':['menouf','elbagour' ],
-    'menouf':['sirs','shibin', 'elsadat'] ,
-    'elbagour':['shibin','sirs'],
-    'elsadat':['shibin','menouf'],
-    'ashmon':['shibin'],
-    'elshohada':['shibin'],
-    'quesna':['shibin'],
-    'tala':['shibin'],
-    'berket':['shibin']
-}
+document.addEventListener("DOMContentLoaded", (event) => {
+	let visited = new Set();
 
-const mapRoads ={
-    'shibin':['menouf','tala','elbagour','elshohada','elsadat','berket','ashmon','quesna'],
-    'sirs':['menouf','elbagour' ],
-    'elsadat':['menouf']
-}
+	const config = {
+		nodeActiveColor: "red",
+		nodeInactiveColor: "yellow",
+		lineActiveColor: "gray",
+		lineInActiveColor: "black",
+	};
 
-const svg=document.getElementById("svg");
+	const roads = {
+		shibin: ["shohada", "menouf", "tala", "elbagour", "berket", "ashmon", "quesna", "elsadat"],
+		sirs: ["menouf", "elbagour"],
+		menouf: ["sirs", "shibin", "elsadat"],
+		elbagour: ["shibin", "sirs"],
+		elsadat: ["shibin", "menouf"],
+		ashmon: ["shibin"],
+		shohada: ["shibin"],
+		quesna: ["shibin"],
+		tala: ["shibin"],
+		berket: ["shibin"],
+	};
 
-function draw()
-{
-  for(s in roads){
+	const mapRoads = {
+		shibin: ["menouf", "tala", "elbagour", "shohada", "elsadat", "berket", "ashmon", "quesna"],
+		sirs: ["menouf", "elbagour"],
+		elsadat: ["menouf"],
+	};
 
-    const x=document.getElementById(`${s}`).cx.animVal.value;
-    const y=document.getElementById(`${s}`).cy.animVal.value;
-    const name= document.createElementNS("http://www.w3.org/2000/svg", "text");
-    name.setAttribute("x",`${x+50}`);
-    name.setAttribute("y",`${y+50}`);
-    
-    name.innerHTML=s;
-    svg.appendChild(name);
-  }  
- for(i in mapRoads){
-     const xStart=document.getElementById(`${i}`).cx.animVal.value;
-     const yStart=document.getElementById(`${i}`).cy.animVal. value;
-     
-     for(j in mapRoads[i]){
-        const xDist=document.getElementById(`${mapRoads[i][j]}`).cx.animVal.value;
-        const yDist=document.getElementById(`${mapRoads[i][j]}`).cy.animVal.value;
-        const line= document.createElementNS("http://www.w3.org/2000/svg", "line");
-        
-        line.setAttribute("x1",`${xStart}`);
-        line.setAttribute("y1",`${yStart}`);
-        line.setAttribute("x2",`${xDist}`);
-        line.setAttribute("y2",`${yDist}`);
-        line.setAttribute("stroke",'black');
-        line.setAttribute("stroke-width",'5px');
-        svg.appendChild(line);
-     }
-     
- }
-}
-draw();
+	const svg = document.getElementById("svg");
 
+	(function draw() {
+		for (s in roads) {
+			const x = document.getElementById(`${s}`).cx.animVal.value;
+			const y = document.getElementById(`${s}`).cy.animVal.value;
+			const name = document.createElementNS("http://www.w3.org/2000/svg", "text");
+			name.setAttribute("x", `${x + 10}`);
+			name.setAttribute("y", `${y + 15}`);
+			name.innerHTML = s;
+			svg.appendChild(name);
+		}
+		for (i in mapRoads) {
+			const xStart = document.getElementById(`${i}`).cx.animVal.value;
+			const yStart = document.getElementById(`${i}`).cy.animVal.value;
 
-// DFS function    
-  let dfsFound=0 ;
-    visited=new Set();
-function dfs(start,distination,visited=new Set())
-{
-    visited.add(start);
-   console.log(start);
-    for (const road of roads[start]) {
-        if(dfsFound==1){break;}        // a child was already DFSed and reached the goal( child altered the dfsFound var )
-        else if(road==distination){   // GOAL REACHED
-            console.log('founded');
-            visited.add(distination);
-            dfsFound=1;
-            break;
-        }
-       else if (!visited.has(road)) {  // first time to explore
-            dfs(road,distination, visited);
-        }
-       
-    }
-    return visited;
+			for (j in mapRoads[i]) {
+				const xDist = document.getElementById(`${mapRoads[i][j]}`).cx.animVal.value;
+				const yDist = document.getElementById(`${mapRoads[i][j]}`).cy.animVal.value;
+				const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
 
-}
-// generating an enent
+				line.setAttribute("x1", `${xStart}`);
+				line.setAttribute("y1", `${yStart}`);
+				line.setAttribute("x2", `${xDist}`);
+				line.setAttribute("y2", `${yDist}`);
+				line.setAttribute("stroke", "black");
+				line.setAttribute("stroke-width", "2px");
+				svg.appendChild(line);
+			}
+		}
+	})();
 
-function activatePath(visited){
-    console.log(visited);
+	function dfs(start, distination) {
+		visited.add(start);
+		delayBy(() => colorizeNode(start, undefined, config.nodeActiveColor), 1);
+		if (start == distination) return true;
+		for (const child of roads[start])
+			if (!visited.has(child)) {
+				visited.add(child);
+				if (dfs(child, distination, visited)) return true;
+			}
+	}
+
+	function bfs(start, destination) {
+		let queue = [];
+
+		queue.push(start);
+		visited.add(start);
+		delayBy(() => colorizeNode(start, undefined, config.nodeActiveColor), 1);
+
+		while (queue.length != 0) {
+			let node = queue.shift();
+			if (start == destination) return true;
+			for (const child of roads[node])
+				if (!visited.has(child)) {
+					visited.add(child);
+					delayBy(() => colorizeNode(child, undefined, config.nodeActiveColor), 1);
+
+					if (child == destination) return;
+					else queue.push(child);
+				}
+		}
+	}
+
+	function colorizeNode(id, prop = "fill", color) {
+		document.querySelector(`#${id}`).style[prop] = color;
+	}
+	let timeout;
+	function debounce() {
+		let counter = 0;
+		return function (func, delay) {
+			counter++;
+			timeout = setTimeout(() => {
+				func();
+			}, delay * 1000 * counter);
+		};
+	}
+
+	let delayBy;
+
+	function deColorizeNode() {
     let i=0;
-    visited.forEach(element => {
-        i += 1;
-        setTimeout(()=>{
-            console.log(element)
-            console.log(document.querySelector(`#${element}`))
-            document.querySelector(`#${element}`).style.fill = 'red';
-        },i*1000);
-        
-    })
-        
-};
+		while(i <=timeout){
+    clearTimeout(i);
+    i++
+    }
+		for (node of visited) {
+			document.querySelector(`#${node}`).style["fill"] = config.nodeInactiveColor;
+		}
+	}
 
+	document.getElementById("form").addEventListener("submit", (e) => {
+		const start = document.getElementById("startCities").value;
+		const distination = document.getElementById("distCities").value;
+		const chosenAlgorithm = document.getElementById("algorithem").value;
+		delayBy = debounce();
+		console.log(visited);
+		deColorizeNode();
+		visited.clear();
 
-document.getElementById('form').addEventListener('submit',(e)=>{
-    
-    
-   
-  
-  //Getting the form values on submit
-    const start=document.getElementById('startCities').value;
-    const distination=document.getElementById('distCities').value;
-    const algo=document.getElementById('algorithem').value;
-    console.table(start, distination, algo);
-   if (algo=="dfs"){
-       visited.clear();
-       dfsFound=0;
-       const results=dfs(start,distination);
-       console.log(results);
-        activatePath(results);
-      
-   }
+		switch (chosenAlgorithm) {
+			case "dfs":
+				dfs(start, distination);
+				break;
+			case "bfs":
+				bfs(start, distination);
+				break;
+		}
 
-  
- 
-
-
-
-   e.preventDefault();
-
-    
-
-   
-   
-   
-   
-  
-
-
-
-
-})
-
-
-
-
-
-
-
-
-
-
-
+		e.preventDefault();
+	});
 });

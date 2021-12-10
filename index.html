@@ -1,85 +1,213 @@
 <!DOCTYPE html>
-<html>
-    <head>
-        <script src="map.js"></script>
-        <style>
-            svg{
-                width: 1500px;
-              
-                height: 1500px;
-            }
-            text{
-                color:  black;
-                font-weight: bold;
-                font-size: 40px;
-            }
-            select{
-                width: 250px;
-                font-size: 30px;
-            }
-            label{
-                font-size: 30px;
-                font-weight: bold;
-            }
-            input {
-                font-size: 30px;
-                font-weight: bold;
-            }
-        </style>
-     
-    </head>
-<body>
+<html lang="en">
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Graph Traversal Algorithms</title>
+    <meta charset="UTF-8" />
+    <script src="map.js"></script>
+    <style>
+      body {
+        font-family: sans-serif;
+        background-color: blueviolet;
+      }
 
-<h1>My first SVG</h1>
-<form id="form">
-  <label>Start :</label>  <select id="startCities">
-        <option value="shibin" selected>Shibin</option>
-        <option value="sirs">Sirs</option>
-        <option value="menouf">Menouf</option>
-        <option value="elbagour" >Elbagour</option>
-        <option value="elshohada" >Elshohada</option>
-        <option value="elsadat">Elsadat</option>
-        <option value="quesna">Quesna</option>
-        <option value="berket" >Berket</option>
-        <option value="ashmon">Ashmon</option>
-        <option value="tala" >Tala</option>
-      </select>
-      <label>Distination :</label>  <select id="distCities">
-        <option value="shibin" selected>Shibin</option>
-        <option value="sirs">Sirs</option>
-        <option value="menouf">Menouf</option>
-        <option value="elbagour" >Elbagour</option>
-        <option value="elshohada" >Elshohada</option>
-        <option value="elsadat">Elsadat</option>
-        <option value="quesna">Quesna</option>
-        <option value="berket" >Berket</option>
-        <option value="ashmon">Ashmon</option>
-        <option value="tala" >Tala</option>
-      </select>  
-      <label>Algorithem :</label>  <select id="algorithem">
-        <option value="dfs" selected>DFS</option>
-        <option value="bfs" >BFS</option>
-      </select>
-    <input type="submit" value="Generate">   
-</form>
-<svg id="svg">
-   <circle id="shibin"   cx="500"  cy="500" r="40" stroke="green" stroke-width="4" fill="yellow" />
-    <circle  id="menouf"  cx="100"  cy="100" r="40" stroke="green" stroke-width="4" fill="yellow" />
-    <circle id="sirs"     cx="500"  cy="50" r="40" stroke="green" stroke-width="4" fill="yellow" />
-    <circle id="quesna"   cx="50"  cy="500" r="40" stroke="green" stroke-width="4" fill="yellow" />
-    <circle id="ashmon"   cx="950"  cy="500" r="40" stroke="green" stroke-width="4" fill="yellow" />
-    <circle id="elshohada"   cx="500"  cy="950" r="40" stroke="green" stroke-width="4" fill="yellow" />
-    <circle id="elbagour" cx="750" cy="150" r="40" stroke="green" stroke-width="4" fill="yellow" />
-    <circle id="berket"    cx="900"  cy="900" r="40" stroke="green" stroke-width="4" fill="yellow" />
-    <circle id="elsadat" cx="100"  cy="900" r="40" stroke="green" stroke-width="4" fill="yellow" />
-    <circle id="tala"     cx="900"  cy="100" r="40" stroke="green" stroke-width="4" fill="yellow" />
+      svg {
+        width: 50%;
+        margin: 15px auto;
+        border: 4px solid #444;
+        background: #404680;
+        display: block;
+        border-radius: 10px;
+        height: 500px;
+      }
+      text {
+        color: black;
+        font-weight: bold;
+        font-size: 20px;
+      }
 
-    
-    
+      label {
+        font-size: 20px;
+        font-weight: bold;
+      }
+      input,
+      select,
+      label {
+        text-align: center;
+        font-size: 18px;
+        font-weight: bold;
+      }
+      h1 {
+        text-align: center;
+        margin: 10px auto 15px auto;
+        padding: 10px 0;
+        width: 50%;
+        border-bottom: 2px solid #444;
+      }
+      select {
+        border-radius: 5px;
+        background: white;
+      }
 
-   
-   
-</svg>
- 
-</body>
+      form {
+        width: 50%;
+        margin: auto;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+
+      form div {
+        display: inline-block;
+        margin-right: 20px;
+      }
+
+      input[type="submit"] {
+        border-radius: 10px;
+        height: 30px;
+
+        width: 10%;
+        display: inline-block;
+        padding: 10px 20px;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Graph Traversal Algorithms Visualizer</h1>
+    <form id="form">
+      <div>
+        <label for="startCities">From </label>
+        <select id="startCities">
+          <option value="shibin">Shibin</option>
+          <option value="sirs">Sirs</option>
+          <option value="menouf" selected>Menouf</option>
+          <option value="elbagour">Elbagour</option>
+          <option value="elshohada">Elshohada</option>
+          <option value="elsadat">Elsadat</option>
+          <option value="quesna">quesna</option>
+          <option value="berket">Berket</option>
+          <option value="ashmon">Ashmon</option>
+          <option value="tala">Tala</option>
+        </select>
+      </div>
+
+      <div>
+        <label for="distCities">To</label>
+        <select id="distCities">
+          <option value="shibin">Shibin</option>
+          <option value="sirs">Sirs</option>
+          <option value="menouf">Menouf</option>
+          <option value="elbagour">Elbagour</option>
+          <option value="elshohada">Elshohada</option>
+          <option value="elsadat">Elsadat</option>
+          <option value="quesna">quesna</option>
+          <option value="berket" selected>Berket</option>
+          <option value="ashmon">Ashmon</option>
+          <option value="tala">Tala</option>
+        </select>
+      </div>
+
+      <div>
+        <label for="algorithem">Algorithm</label>
+        <select id="algorithem">
+          <option value="dfs" selected>DFS</option>
+          <option value="bfs">BFS</option>
+        </select>
+      </div>
+
+      <input type="submit" value="Go" />
+    </form>
+    <svg id="svg">
+      <circle
+        id="shibin"
+        cx="320"
+        cy="250"
+        r="10"
+        stroke="green"
+        stroke-width="2"
+        fill="yellow"
+      />
+      <circle
+        id="menouf"
+        cx="50"
+        cy="50"
+        r="10"
+        stroke="green"
+        stroke-width="2"
+        fill="yellow"
+      />
+      <circle
+        id="sirs"
+        cx="250"
+        cy="25"
+        r="10"
+        stroke="green"
+        stroke-width="2"
+        fill="yellow"
+      />
+      <circle
+        id="quesna"
+        cx="25"
+        cy="250"
+        r="10"
+        stroke="green"
+        stroke-width="2"
+        fill="yellow"
+      />
+      <circle
+        id="ashmon"
+        cx="450"
+        cy="250"
+        r="10"
+        stroke="green"
+        stroke-width="2"
+        fill="yellow"
+      />
+      <circle
+        id="shohada"
+        cx="250"
+        cy="475"
+        r="10"
+        stroke="green"
+        stroke-width="2"
+        fill="yellow"
+      />
+      <circle
+        id="elbagour"
+        cx="375"
+        cy="75"
+        r="10"
+        stroke="green"
+        stroke-width="2"
+        fill="yellow"
+      />
+      <circle
+        id="berket"
+        cx="450"
+        cy="450"
+        r="10"
+        stroke="green"
+        stroke-width="2"
+        fill="yellow"
+      />
+      <circle
+        id="elsadat"
+        cx="150"
+        cy="400"
+        r="10"
+        stroke="green"
+        stroke-width="2"
+        fill="yellow"
+      />
+      <circle
+        id="tala"
+        cx="450"
+        cy="150"
+        r="10"
+        stroke="green"
+        stroke-width="2"
+        fill="yellow"
+      />
+    </svg>
+  </body>
 </html>
