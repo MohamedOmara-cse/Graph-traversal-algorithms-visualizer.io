@@ -60,6 +60,40 @@ const Utils = {
 			resetCounter,
 			delayBy
 		}
+	},
+
+	addNodeName(text) {
+		const x = document.getElementById(`${text}`).cx.animVal.value;
+		const y = document.getElementById(`${text}`).cy.animVal.value;
+		const name = document.createElementNS("http://www.w3.org/2000/svg", "text");
+		name.setAttribute("x", `${x + 10}`);
+		name.setAttribute("y", `${y + 15}`);
+		name.innerHTML = text;
+		svg.appendChild(name);
+	},
+
+	addLineBetween(start, distination) {
+		const startX = document.getElementById(`${start}`).cx.animVal.value;
+		const startY = document.getElementById(`${start}`).cy.animVal.value;
+		const distinationX = document.getElementById(`${distination}`).cx.animVal.value;
+		const distinationY = document.getElementById(`${distination}`).cy.animVal.value;
+
+		const lineConfig = {
+			x1: startX,
+			x2: distinationX,
+			y1: startY,
+			y2: distinationY,
+			stroke: "black",
+			strokeWidth: "1px",
+		};
+
+		const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
+
+		Object.keys(lineConfig).forEach((attribute) => {
+			line.setAttribute(attribute, `${lineConfig[attribute]}`);
+		});
+
+		svg.appendChild(line);
 	}
 }
 
@@ -99,54 +133,24 @@ document.addEventListener("DOMContentLoaded", (event) => {
 	const svg = document.getElementById("svg");
 
 	(function draw() {
-		for (node in roads) {
-			const x = document.getElementById(`${node}`).cx.animVal.value;
-			const y = document.getElementById(`${node}`).cy.animVal.value;
-			const name = document.createElementNS("http://www.w3.org/2000/svg", "text");
-			name.setAttribute("x", `${x + 10}`);
-			name.setAttribute("y", `${y + 15}`);
-			name.innerHTML = node;
-			svg.appendChild(name);
-		}
-		for (i in mapRoads) {
-			const Start = document.getElementById(`${i}`);
-			const xStart = Start.cx.animVal.value;
-			const yStart = Start.cy.animVal.value;
+		for (node in roads) Utils.addNodeName(node);
 
-			for (j in mapRoads[i]) {
-				const Dist = document.getElementById(`${mapRoads[i][j]}`);
-				const xDist = Dist.cx.animVal.value;
-				const yDist = Dist.cy.animVal.value;
+		for (node in mapRoads)
+			for (child in mapRoads[node])
+				Utils.addLineBetween(node, mapRoads[node][child]);
 
-				const lineConfig = {
-					x1: xStart,
-					x2: xDist,
-					y1: yStart,
-					y2: yDist,
-					stroke: "black",
-					strokeWidth: "1px",
-				};
-
-				const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
-
-				Object.keys(lineConfig).forEach((attribute) => {
-					line.setAttribute(attribute, `${lineConfig[attribute]}`);
-				});
-
-				svg.appendChild(line);
-			}
-		}
 	})();
-
 
 	document.getElementById("form").addEventListener("submit", (e) => {
 		const start = document.getElementById("startCities").value;
 		const distination = document.getElementById("distCities").value;
 		const chosenAlgorithm = document.getElementById("algorithem").value;
+
 		Utils.resetNodes();
 		visited.clear();
 		resetCounter();
 		Traversals[chosenAlgorithm](start, distination)
+
 		e.preventDefault();
 	});
 });
