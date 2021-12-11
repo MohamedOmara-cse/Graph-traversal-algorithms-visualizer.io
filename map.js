@@ -1,9 +1,27 @@
 const data = {
+	SVGNodesPositions: {
+		shibin: { cx: 32, cy: 25 },
+		sirs: { cx: 25, cy: 3 },
+		menouf: { cx: 5, cy: 5 },
+		elbagour: { cx: 37.5, cy: 7.5 },
+		elsadat: { cx: 15, cy: 40 },
+		ashmon: { cx: 45, cy: 25 },
+		shohada: { cx: 25, cy: 47.5 },
+		quesna: { cx: 3, cy: 25 },
+		tala: { cx: 45, cy: 15 },
+		berket: { cx: 45, cy: 45 },
+	},
+
 	config: {
 		nodeActiveColor: "red",
+		nodeStrokeColor: "green",
+		nodeStrokeWidth: "2px",
+		nodeRadius: 10,
+		nodeFillColor: "yellow",
 		nodeInactiveColor: "yellow",
-		lineActiveColor: "gray",
+		lineActiveColor: "yellow",
 		lineInActiveColor: "black",
+		lineWidth: "2px",
 	},
 
 	roads: {
@@ -90,14 +108,13 @@ class PriorityQueue {
 				break;
 			}
 
-		if (!contain) {
-			this.items.push(qElement);
-		}
+		if (!contain) this.items.push(qElement);
 	}
 }
 
-const { roads, mapRoads, config, distances, Coordinates } = data;
+const { SVGNodesPositions, roads, mapRoads, config, distances, Coordinates } = data;
 let visited = new Set();
+let path = new Set();
 let timeout;
 
 const Utils = {
@@ -105,9 +122,14 @@ const Utils = {
 		document.querySelector(`#${id}`).style.fill = color;
 	},
 
-	resetNodes: function () {
+	colorizeLine: function (direction, color) {
+		document.querySelector(`.${direction}`).style.stroke = color;
+	},
+
+	resetNodesPath: function () {
 		for (let i = 0; i < timeout; i++) clearTimeout(i);
 		for (node of visited) this.colorizeNode(node, config.nodeInactiveColor);
+		for (line of path) this.colorizeLine(line, config.lineInActiveColor);
 	},
 
 	debounce: function () {
@@ -120,7 +142,7 @@ const Utils = {
 		function delayBy(callback, delay) {
 			counter++;
 			timeout = setTimeout(() => {
-				callback();
+				callback.call();
 			}, delay * 1000 * counter);
 		}
 
@@ -140,14 +162,37 @@ const Utils = {
 		svg.appendChild(name);
 	},
 
+	addNodeCircle(id) {
+		const circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+		const circleData = SVGNodesPositions[id];
+
+		let ratio = screen.width / (70 * (screen.width < 768 ? 1 : 2));
+
+		const circleConfig = {
+			id: id,
+			cx: circleData.cx * ratio,
+			cy: circleData.cy * ratio,
+			r: config.nodeRadius,
+			fill: config.nodeInactiveColor,
+			stroke: config.nodeStrokeColor,
+			"stroke-width": config.nodeStrokeWidth,
+		};
+		Object.keys(circleConfig).forEach((attribute) => {
+			circle.setAttribute(attribute, circleConfig[attribute]);
+		});
+
+		svg.appendChild(circle);
+	},
+
 	addLineBetween(start, distination) {
 		const lineConfig = {
 			x1: document.getElementById(`${start}`).cx.animVal.value,
 			x2: document.getElementById(`${distination}`).cx.animVal.value,
 			y1: document.getElementById(`${start}`).cy.animVal.value,
 			y2: document.getElementById(`${distination}`).cy.animVal.value,
-			stroke: "black",
-			strokeWidth: "1px",
+			class: `${start}-${distination} ${distination}-${start}`,
+			stroke: config.lineInActiveColor,
+			"stroke-width": config.lineWidth,
 		};
 
 		const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
@@ -172,14 +217,16 @@ const Utils = {
 const { delayBy, resetCounter } = Utils.debounce();
 
 const Traversals = {
-	dfs: function (start, distination) {
+	dfs: function (start, destination) {
 		visited.add(start);
 		delayBy(() => Utils.colorizeNode(start, config.nodeActiveColor), 1);
-		if (start == distination) return true;
+		if (start == destination) return true;
 		for (const child of roads[start])
 			if (!visited.has(child)) {
+				path.add(`${start}-${child}`);
+				delayBy(() => Utils.colorizeLine(`${start}-${child}`, config.lineActiveColor), 1);
 				visited.add(child);
-				if (this.dfs(child, distination, visited)) return true;
+				if (this.dfs(child, destination, visited)) return true;
 			}
 	},
 
@@ -192,6 +239,11 @@ const Traversals = {
 			if (node == distination) return true;
 			for (const child of roads[node])
 				if (!visited.has(child)) {
+					path.add(`${node}-${child}`);
+					delayBy(
+						() => Utils.colorizeLine(`${node}-${child}`, config.lineActiveColor),
+						1
+					);
 					visited.add(child);
 					queue.push(child);
 				}
@@ -200,10 +252,7 @@ const Traversals = {
 
 	astar: function (start, destination) {
 		pQueue = new PriorityQueue();
-		pQueue.enqueue(
-			start,
-			distances[start][destination] + Utils.calculateHeuristic(start, destination)
-		);
+		pQueue.enqueue(start, 0 + Utils.calculateHeuristic(start, destination));
 		while (pQueue.items.length) {
 			const { node, priority } = pQueue.items.shift();
 			visited.add(node);
@@ -211,24 +260,32 @@ const Traversals = {
 			if (node == destination) return true;
 			for (const child of roads[node])
 				if (!visited.has(child)) {
+					path.add(`${node}-${child}`);
+					delayBy(
+						() => Utils.colorizeLine(`${node}-${child}`, config.lineActiveColor),
+						1
+					);
 					visited.add(child);
 					pQueue.enqueue(
 						child,
-						distances[node][child] + Utils.calculateHeuristic(child, destination)
+						priority +
+							distances[node][child] +
+							Utils.calculateHeuristic(child, destination)
 					);
-					console.table(pQueue.items);
 				}
 		}
-
-		console.log(visited);
 	},
 };
 
 document.addEventListener("DOMContentLoaded", (event) => {
 	const svg = document.getElementById("svg");
+	console.log(screen.width);
 
 	(function draw() {
-		for (node in roads) Utils.addNodeName(node);
+		for (node in roads) {
+			Utils.addNodeCircle(node);
+			Utils.addNodeName(node);
+		}
 
 		for (node in mapRoads)
 			for (child in mapRoads[node]) Utils.addLineBetween(node, mapRoads[node][child]);
@@ -239,7 +296,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
 		const distination = document.getElementById("distCities").value;
 		const chosenAlgorithm = document.getElementById("algorithem").value;
 
-		Utils.resetNodes();
+		Utils.resetNodesPath();
 		visited.clear();
 		resetCounter();
 		Traversals[chosenAlgorithm](start, distination);
