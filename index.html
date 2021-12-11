@@ -18,7 +18,7 @@
         background: #bac0f5;
         display: block;
         border-radius: 10px;
-        height: 500px;
+        height: calc(80vh - 30px);
       }
       text {
         color: black;
@@ -70,13 +70,14 @@
         padding: 6px 20px;
       }
 
-      @media screen and (max-width: 600px) {
-        svg,
-        h1 {
+      @media screen and (max-width: 700px) {
+        svg {
           width: 100%;
+          height: calc(55vh);
         }
 
         h1 {
+          width: 100%;
           font-size: 25px;
         }
 
@@ -104,7 +105,7 @@
     </style>
   </head>
   <body>
-    <h1>Graph Traversal Algorithms Visualizer</h1>
+    <h1>Graph Traversal Visualizer</h1>
     <form id="form">
       <div>
         <label for="startCities">From </label>
