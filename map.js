@@ -1,5 +1,4 @@
 const data = {
-
 	config: {
 		nodeActiveColor: "red",
 		nodeInactiveColor: "yellow",
@@ -27,7 +26,16 @@ const data = {
 	},
 
 	distances: {
-		shibin: { tala: 18, shohada: 16.5, menouf: 16.4, elbagour: 14.6, quesna: 18.7, berket: 14, ashmon: 42.2, elsadat: 61.4 },
+		shibin: {
+			tala: 18,
+			shohada: 16.5,
+			menouf: 16.4,
+			elbagour: 14.6,
+			quesna: 18.7,
+			berket: 14,
+			ashmon: 42.2,
+			elsadat: 61.4,
+		},
 		sirs: { menouf: 4.2, elbagour: 7.1 },
 		menouf: { sirs: 4.2, shibin: 16.1, elsadat: 55.9 },
 		tala: { shibin: 18 },
@@ -50,13 +58,14 @@ const data = {
 		quesna: [30.5676, 31.14956],
 		elsadat: [30.36281, 30.53315],
 		shohada: [30.5976, 30.89575],
-	}
+	},
+};
 
-}
-
-Object.keys(data.Coordinates).forEach(node => {
-	data.Coordinates[node] = data.Coordinates[node].map(coordinate => Math.round((coordinate - 30) * 100));
-})
+Object.keys(data.Coordinates).forEach((node) => {
+	data.Coordinates[node] = data.Coordinates[node].map((coordinate) =>
+		Math.round((coordinate - 30) * 100)
+	);
+});
 
 class QElement {
 	constructor(node, priority) {
@@ -66,7 +75,6 @@ class QElement {
 }
 
 class PriorityQueue {
-
 	constructor() {
 		this.items = [];
 	}
@@ -86,7 +94,6 @@ class PriorityQueue {
 			this.items.push(qElement);
 		}
 	}
-
 }
 
 const { roads, mapRoads, config, distances, Coordinates } = data;
@@ -94,7 +101,6 @@ let visited = new Set();
 let timeout;
 
 const Utils = {
-
 	colorizeNode: function (id, color) {
 		document.querySelector(`#${id}`).style.fill = color;
 	},
@@ -116,12 +122,12 @@ const Utils = {
 			timeout = setTimeout(() => {
 				callback();
 			}, delay * 1000 * counter);
-		};
+		}
 
 		return {
 			resetCounter,
-			delayBy
-		}
+			delayBy,
+		};
 	},
 
 	addNodeName(text) {
@@ -135,7 +141,6 @@ const Utils = {
 	},
 
 	addLineBetween(start, distination) {
-
 		const lineConfig = {
 			x1: document.getElementById(`${start}`).cx.animVal.value,
 			x2: document.getElementById(`${distination}`).cx.animVal.value,
@@ -155,18 +160,18 @@ const Utils = {
 	},
 
 	calculateHeuristic(node, destination) {
-
-		return Math.round(Math.sqrt(
-			Math.pow(Math.abs(Coordinates[node][0] - Coordinates[destination][0]), 2) +
-			Math.pow(Math.abs(Coordinates[node][1] - Coordinates[destination][1]), 2)
-		));
-	}
-}
+		return Math.round(
+			Math.sqrt(
+				Math.pow(Math.abs(Coordinates[node][0] - Coordinates[destination][0]), 2) +
+					Math.pow(Math.abs(Coordinates[node][1] - Coordinates[destination][1]), 2)
+			)
+		);
+	},
+};
 
 const { delayBy, resetCounter } = Utils.debounce();
 
 const Traversals = {
-
 	dfs: function (start, distination) {
 		visited.add(start);
 		delayBy(() => Utils.colorizeNode(start, config.nodeActiveColor), 1);
@@ -195,7 +200,10 @@ const Traversals = {
 
 	astar: function (start, destination) {
 		pQueue = new PriorityQueue();
-		pQueue.enqueue(start, distances[start][destination] + Utils.calculateHeuristic(start, destination));
+		pQueue.enqueue(
+			start,
+			distances[start][destination] + Utils.calculateHeuristic(start, destination)
+		);
 		while (pQueue.items.length) {
 			const { node, priority } = pQueue.items.shift();
 			visited.add(node);
@@ -204,24 +212,26 @@ const Traversals = {
 			for (const child of roads[node])
 				if (!visited.has(child)) {
 					visited.add(child);
-					pQueue.enqueue(child, distances[node][child] + Utils.calculateHeuristic(child, destination));
+					pQueue.enqueue(
+						child,
+						distances[node][child] + Utils.calculateHeuristic(child, destination)
+					);
 					console.table(pQueue.items);
 				}
 		}
-	}
-}
+
+		console.log(visited);
+	},
+};
 
 document.addEventListener("DOMContentLoaded", (event) => {
-
 	const svg = document.getElementById("svg");
 
 	(function draw() {
 		for (node in roads) Utils.addNodeName(node);
 
 		for (node in mapRoads)
-			for (child in mapRoads[node])
-				Utils.addLineBetween(node, mapRoads[node][child]);
-
+			for (child in mapRoads[node]) Utils.addLineBetween(node, mapRoads[node][child]);
 	})();
 
 	document.getElementById("form").addEventListener("submit", (e) => {
@@ -232,7 +242,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
 		Utils.resetNodes();
 		visited.clear();
 		resetCounter();
-		Traversals[chosenAlgorithm](start, distination)
+		Traversals[chosenAlgorithm](start, distination);
 
 		e.preventDefault();
 	});
