@@ -1,7 +1,24 @@
 const data = {
 
+	SVGNodesPositions: {
+		shibin: { cx: 32, cy: 25, },
+		sirs: { cx: 25, cy: 3, },
+		menouf: { cx: 5, cy: 5, },
+		elbagour: { cx: 37.5, cy: 7.5, },
+		elsadat: { cx: 15, cy: 40, },
+		ashmon: { cx: 45, cy: 25, },
+		shohada: { cx: 25, cy: 47.5, },
+		quesna: { cx: 3, cy: 25, },
+		tala: { cx: 45, cy: 15, },
+		berket: { cx: 45, cy: 45, },
+	},
+
 	config: {
 		nodeActiveColor: "red",
+		nodeStrokeColor: "green",
+		nodeStrokeWidth: "2px",
+		nodeRadius: 10,
+		nodeFillColor: "yellow",
 		nodeInactiveColor: "yellow",
 		lineActiveColor: "yellow",
 		lineInActiveColor: "black",
@@ -87,7 +104,7 @@ class PriorityQueue {
 	}
 }
 
-const { roads, mapRoads, config, distances, Coordinates } = data;
+const { SVGNodesPositions, roads, mapRoads, config, distances, Coordinates } = data;
 let visited = new Set();
 let path = new Set();
 let timeout;
@@ -136,6 +153,29 @@ const Utils = {
 		name.setAttribute("y", `${y + 15}`);
 		name.innerHTML = text;
 		svg.appendChild(name);
+	},
+
+	addNodeCircle(id) {
+		const circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+		const circleData = SVGNodesPositions[id]
+
+		let ratio = screen.width / (70 * (screen.width < 768 ? 1 : 2));
+
+		const circleConfig = {
+			id: id,
+			cx: circleData.cx * ratio,
+			cy: circleData.cy * ratio,
+			r: config.nodeRadius,
+			fill: config.nodeInactiveColor,
+			stroke: config.nodeStrokeColor,
+			"stroke-width": config.nodeStrokeWidth
+		}
+		Object.keys(circleConfig).forEach(attribute => {
+			circle.setAttribute(attribute, circleConfig[attribute]);
+		});
+
+
+		svg.appendChild(circle);
 	},
 
 	addLineBetween(start, distination) {
@@ -224,9 +264,13 @@ const Traversals = {
 document.addEventListener("DOMContentLoaded", (event) => {
 
 	const svg = document.getElementById("svg");
+	console.log(screen.width);
 
 	(function draw() {
-		for (node in roads) Utils.addNodeName(node);
+		for (node in roads) {
+			Utils.addNodeCircle(node);
+			Utils.addNodeName(node);
+		}
 
 		for (node in mapRoads)
 			for (child in mapRoads[node])
