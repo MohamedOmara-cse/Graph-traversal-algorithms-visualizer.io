@@ -208,7 +208,7 @@ const Utils = {
 		return Math.round(
 			Math.sqrt(
 				Math.pow(Math.abs(Coordinates[node][0] - Coordinates[destination][0]), 2) +
-					Math.pow(Math.abs(Coordinates[node][1] - Coordinates[destination][1]), 2)
+				Math.pow(Math.abs(Coordinates[node][1] - Coordinates[destination][1]), 2)
 			)
 		);
 	},
@@ -281,8 +281,8 @@ const Traversals = {
 					pQueue.enqueue(
 						child,
 						priority +
-							distances[node][child] +
-							Utils.calculateHeuristic(child, destination)
+						distances[node][child] +
+						Utils.calculateHeuristic(child, destination)
 					);
 				}
 		}
