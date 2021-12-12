@@ -118,18 +118,18 @@ let path = new Set();
 let timeout;
 
 const Utils = {
-	colorizeNode: function (id, color) {
-		document.querySelector(`#${id}`).style.fill = color;
-	},
-
-	colorizeLine: function (direction, color) {
-		document.querySelector(`.${direction}`).style.stroke = color;
+	colorizeElement: function (type, className, color) {
+		let elementProp = {
+			node: "fill",
+			line: "stroke",
+		};
+		document.querySelector(`.${className}`).style[elementProp[type]] = color;
 	},
 
 	resetNodesPath: function () {
 		for (let i = 0; i < timeout; i++) clearTimeout(i);
-		for (node of visited) this.colorizeNode(node, config.nodeInactiveColor);
-		for (line of path) this.colorizeLine(line, config.lineInActiveColor);
+		for (node of visited) this.colorizeElement(node, "fill", config.nodeInactiveColor);
+		for (line of path) this.colorizeElement(line, "stroke", config.lineInActiveColor);
 	},
 
 	debounce: function () {
@@ -139,7 +139,7 @@ const Utils = {
 			counter = 0;
 		}
 
-		function delayBy(callback, delay) {
+		function delayBy(callback, delay = 1) {
 			counter++;
 			timeout = setTimeout(() => {
 				callback.call();
@@ -153,8 +153,8 @@ const Utils = {
 	},
 
 	addNodeName(text) {
-		const x = document.getElementById(`${text}`).cx.animVal.value;
-		const y = document.getElementById(`${text}`).cy.animVal.value;
+		const x = document.querySelector(`.${text}`).cx.animVal.value;
+		const y = document.querySelector(`.${text}`).cy.animVal.value;
 		const name = document.createElementNS("http://www.w3.org/2000/svg", "text");
 		name.setAttribute("x", `${x + 10}`);
 		name.setAttribute("y", `${y + 15}`);
@@ -169,7 +169,7 @@ const Utils = {
 		let ratio = screen.width / (70 * (screen.width < 768 ? 1 : 2));
 
 		const circleConfig = {
-			id: id,
+			class: id,
 			cx: circleData.cx * ratio,
 			cy: circleData.cy * ratio,
 			r: config.nodeRadius,
@@ -186,10 +186,10 @@ const Utils = {
 
 	addLineBetween(start, distination) {
 		const lineConfig = {
-			x1: document.getElementById(`${start}`).cx.animVal.value,
-			x2: document.getElementById(`${distination}`).cx.animVal.value,
-			y1: document.getElementById(`${start}`).cy.animVal.value,
-			y2: document.getElementById(`${distination}`).cy.animVal.value,
+			x1: document.querySelector(`.${start}`).cx.animVal.value,
+			x2: document.querySelector(`.${distination}`).cx.animVal.value,
+			y1: document.querySelector(`.${start}`).cy.animVal.value,
+			y2: document.querySelector(`.${distination}`).cy.animVal.value,
 			class: `${start}-${distination} ${distination}-${start}`,
 			stroke: config.lineInActiveColor,
 			"stroke-width": config.lineWidth,
@@ -219,12 +219,14 @@ const { delayBy, resetCounter } = Utils.debounce();
 const Traversals = {
 	dfs: function (start, destination) {
 		visited.add(start);
-		delayBy(() => Utils.colorizeNode(start, config.nodeActiveColor), 1);
+		delayBy(() => Utils.colorizeElement("node", start, config.nodeActiveColor));
 		if (start == destination) return true;
 		for (const child of roads[start])
 			if (!visited.has(child)) {
 				path.add(`${start}-${child}`);
-				delayBy(() => Utils.colorizeLine(`${start}-${child}`, config.lineActiveColor), 1);
+				delayBy(() =>
+					Utils.colorizeElement("line", `${start}-${child}`, config.lineActiveColor)
+				);
 				visited.add(child);
 				if (this.dfs(child, destination, visited)) return true;
 			}
@@ -235,13 +237,18 @@ const Traversals = {
 		while (queue.length) {
 			const node = queue.shift();
 			visited.add(node);
-			delayBy(() => Utils.colorizeNode(node, config.nodeActiveColor), 1);
+			delayBy(() => Utils.colorizeElement("node", node, config.nodeActiveColor));
 			if (node == distination) return true;
 			for (const child of roads[node])
 				if (!visited.has(child)) {
 					path.add(`${node}-${child}`);
 					delayBy(
-						() => Utils.colorizeLine(`${node}-${child}`, config.lineActiveColor),
+						() =>
+							Utils.colorizeElement(
+								"line",
+								`${node}-${child}`,
+								config.lineActiveColor
+							),
 						1
 					);
 					visited.add(child);
@@ -256,13 +263,18 @@ const Traversals = {
 		while (pQueue.items.length) {
 			const { node, priority } = pQueue.items.shift();
 			visited.add(node);
-			delayBy(() => Utils.colorizeNode(node, config.nodeActiveColor), 1);
+			delayBy(() => Utils.colorizeElement("node", node, config.nodeActiveColor));
 			if (node == destination) return true;
 			for (const child of roads[node])
 				if (!visited.has(child)) {
 					path.add(`${node}-${child}`);
 					delayBy(
-						() => Utils.colorizeLine(`${node}-${child}`, config.lineActiveColor),
+						() =>
+							Utils.colorizeElement(
+								"line",
+								`${node}-${child}`,
+								config.lineActiveColor
+							),
 						1
 					);
 					visited.add(child);
@@ -279,8 +291,6 @@ const Traversals = {
 
 document.addEventListener("DOMContentLoaded", (event) => {
 	const svg = document.getElementById("svg");
-	console.log(screen.width);
-
 	(function draw() {
 		for (node in roads) {
 			Utils.addNodeCircle(node);
