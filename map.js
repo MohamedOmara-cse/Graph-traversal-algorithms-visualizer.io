@@ -128,8 +128,8 @@ const Utils = {
 
 	resetNodesPath: function () {
 		for (let i = 0; i < timeout; i++) clearTimeout(i);
-		for (node of visited) this.colorizeElement(node, "fill", config.nodeInactiveColor);
-		for (line of path) this.colorizeElement(line, "stroke", config.lineInActiveColor);
+		for (node of visited) this.colorizeElement("node", node, config.nodeInactiveColor);
+		for (line of path) this.colorizeElement("line", line, config.lineInActiveColor);
 	},
 
 	debounce: function () {
@@ -224,9 +224,7 @@ const Traversals = {
 		for (const child of roads[start])
 			if (!visited.has(child)) {
 				path.add(`${start}-${child}`);
-				delayBy(() =>
-					Utils.colorizeElement("line", `${start}-${child}`, config.lineActiveColor)
-				);
+				delayBy(() => Utils.colorizeElement("line", `${start}-${child}`, config.lineActiveColor));
 				visited.add(child);
 				if (this.dfs(child, destination, visited)) return true;
 			}
@@ -243,12 +241,7 @@ const Traversals = {
 				if (!visited.has(child)) {
 					path.add(`${node}-${child}`);
 					delayBy(
-						() =>
-							Utils.colorizeElement(
-								"line",
-								`${node}-${child}`,
-								config.lineActiveColor
-							),
+						() => Utils.colorizeElement("line", `${node}-${child}`, config.lineActiveColor),
 						1
 					);
 					visited.add(child);
@@ -269,12 +262,7 @@ const Traversals = {
 				if (!visited.has(child)) {
 					path.add(`${node}-${child}`);
 					delayBy(
-						() =>
-							Utils.colorizeElement(
-								"line",
-								`${node}-${child}`,
-								config.lineActiveColor
-							),
+						() => Utils.colorizeElement("line", `${node}-${child}`, config.lineActiveColor),
 						1
 					);
 					visited.add(child);
