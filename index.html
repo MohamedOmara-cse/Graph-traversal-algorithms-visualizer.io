@@ -20,10 +20,7 @@
 				border-radius: 10px;
 				height: calc(80vh - 30px);
 			}
-			button.disabled {
-				background-color: 
-        grey;
-			}
+		
 			#message {
 				color: white;
 				font-weight: bold;
@@ -72,10 +69,11 @@
 				margin-left: 100px;
 			}
 
-			div.active button {
-				background-color: gray;
+			div.deactive button {
+			  pointer-events:none ;
+        background-color: gray;
 			}
-			@media screen and (max-width: 1000px) {
+			@media screen and (max-width: 1300px) {
 				svg {
 					width: 100%;
 					height: calc(70vh);
@@ -102,7 +100,7 @@
 			</div>
 			<div style="display: flex">
 				<div id="algorithmBtn">
-					<button id="dfsButton" disabled data-algo="dfs">DFS</button>
+					<button id="dfsButton"  data-algo="dfs">DFS</button>
 					<button id="bfsButton" data-algo="bfs">BFS</button>
 					<button id="astarButton" data-algo="astar">A*</button>
 				</div>

@@ -357,9 +357,7 @@ document.addEventListener("DOMContentLoaded", (e) => {
 		}
 		roadSelection = [];
 		counterOfSelectedNode = 0;
-
-		algoButtonsContainer.classList.toggle("active");
-
+		algoButtonsContainer.classList.remove("deactive");
 		Utils.resetNodesPath();
 		visited.clear();
 		resetCounter();
@@ -367,7 +365,7 @@ document.addEventListener("DOMContentLoaded", (e) => {
 
 	algoButtonsContainer.onclick = (e) => {
 		if (e.target.tagName == "BUTTON") {
-			algoButtonsContainer.classList.toggle("active");
+			algoButtonsContainer.classList.toggle("deactive");
 			const targetAlgorithm = e.target.dataset.algo;
 			const start = roadSelection[0];
 			const destination = roadSelection[1];
