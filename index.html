@@ -71,6 +71,10 @@
 			#resetButton {
 				margin-left: 100px;
 			}
+
+			div.active button {
+				background-color: gray;
+			}
 			@media screen and (max-width: 1000px) {
 				svg {
 					width: 100%;
@@ -98,9 +102,9 @@
 			</div>
 			<div style="display: flex">
 				<div id="algorithmBtn">
-					<button class="algoButton" id="dfsButton" disabled data-algo="dfs">DFS</button>
-					<button class="algoButton" id="bfsButton" data-algo="bfs">BFS</button>
-					<button class="algoButton" id="astarButton" data-algo="astar">A*</button>
+					<button id="dfsButton" disabled data-algo="dfs">DFS</button>
+					<button id="bfsButton" data-algo="bfs">BFS</button>
+					<button id="astarButton" data-algo="astar">A*</button>
 				</div>
 				<button id="resetButton">reset</button>
 			</div>

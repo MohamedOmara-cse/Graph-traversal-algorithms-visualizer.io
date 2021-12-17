@@ -245,7 +245,7 @@ const Utils = {
 		return Math.round(
 			Math.sqrt(
 				Math.pow(Math.abs(Coordinates[node][0] - Coordinates[destination][0]), 2) +
-					Math.pow(Math.abs(Coordinates[node][1] - Coordinates[destination][1]), 2)
+				Math.pow(Math.abs(Coordinates[node][1] - Coordinates[destination][1]), 2)
 			)
 		);
 	},
@@ -320,7 +320,7 @@ document.addEventListener("DOMContentLoaded", (e) => {
 	const resetButton = document.querySelector("#resetButton");
 	const svg = document.querySelector("svg");
 	const algoButtonsContainer
-   = document.querySelector("#algorithmBtn");
+		= document.querySelector("#algorithmBtn");
 
 	let counterOfSelectedNode = 0;
 	Utils.corrdinatesProcess();
@@ -357,19 +357,17 @@ document.addEventListener("DOMContentLoaded", (e) => {
 		}
 		roadSelection = [];
 		counterOfSelectedNode = 0;
-		if (algoButtonsContainer
-      .disables == true) {
-			algoButtonsContainer
-      .disables = false;
-		}
+
+		algoButtonsContainer.classList.toggle("active");
+
 		Utils.resetNodesPath();
 		visited.clear();
 		resetCounter();
 	};
 
-	
 	algoButtonsContainer.onclick = (e) => {
 		if (e.target.tagName == "BUTTON") {
+			algoButtonsContainer.classList.toggle("active");
 			const targetAlgorithm = e.target.dataset.algo;
 			const start = roadSelection[0];
 			const destination = roadSelection[1];
