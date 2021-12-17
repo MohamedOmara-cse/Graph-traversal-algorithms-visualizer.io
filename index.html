@@ -20,6 +20,10 @@
 				border-radius: 10px;
 				height: calc(80vh - 30px);
 			}
+			button.disabled {
+				background-color: 
+        grey;
+			}
 			#message {
 				color: white;
 				font-weight: bold;
@@ -94,7 +98,7 @@
 			</div>
 			<div style="display: flex">
 				<div id="algorithmBtn">
-					<button class="algoButton" id="dfsButton" data-algo="dfs">DFS</button>
+					<button class="algoButton" id="dfsButton" disabled data-algo="dfs">DFS</button>
 					<button class="algoButton" id="bfsButton" data-algo="bfs">BFS</button>
 					<button class="algoButton" id="astarButton" data-algo="astar">A*</button>
 				</div>

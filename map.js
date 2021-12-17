@@ -319,10 +319,11 @@ const messege = document.querySelector("#message");
 document.addEventListener("DOMContentLoaded", (e) => {
 	const resetButton = document.querySelector("#resetButton");
 	const svg = document.querySelector("svg");
-	const algoButtons = document.querySelector("#algorithmBtn");
+	const algoButtonsContainer
+   = document.querySelector("#algorithmBtn");
 
 	let counterOfSelectedNode = 0;
-  Utils.corrdinatesProcess();
+	Utils.corrdinatesProcess();
 	(function draw() {
 		for (node in mapRoads)
 			for (child in mapRoads[node]) Utils.addLineBetween(node, mapRoads[node][child]);
@@ -356,25 +357,24 @@ document.addEventListener("DOMContentLoaded", (e) => {
 		}
 		roadSelection = [];
 		counterOfSelectedNode = 0;
-		if (algoButtons.disables == true) {
-			algoButtons.disables = false;
+		if (algoButtonsContainer
+      .disables == true) {
+			algoButtonsContainer
+      .disables = false;
 		}
 		Utils.resetNodesPath();
 		visited.clear();
 		resetCounter();
 	};
 
-	console.log(algoButtons);
-	algoButtons.onclick = (e) => {
+	
+	algoButtonsContainer.onclick = (e) => {
 		if (e.target.tagName == "BUTTON") {
 			const targetAlgorithm = e.target.dataset.algo;
 			const start = roadSelection[0];
 			const destination = roadSelection[1];
 			console.table(start, destination, targetAlgorithm);
 			if (start && destination && targetAlgorithm) {
-				algoButtons.style.disables = true;
-				console.log(algoButtons.childNodes.tag);
-				//	algoButtons.childNodes.style.backgroundColor = config.disableAlgoButtons;
 				Traversals[targetAlgorithm](start, destination);
 			}
 		}
