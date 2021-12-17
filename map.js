@@ -137,7 +137,8 @@ class PriorityQueue {
 const { SVGNodesPositions, roads, mapRoads, config, distances, Coordinates } = data;
 let visited = new Set();
 let path = new Set();
-let timeout;
+let currentTimeoutId;
+let previousTimeoutId=0;
 
 const Utils = {
 	colorizeElement: function (type, className, color, strokehWidth = config.activeStrokeWidth) {
@@ -156,7 +157,7 @@ const Utils = {
 		});
 	},
 	resetNodesPath: function () {
-		for (let i = 0; i <= timeout; i++) clearTimeout(i);
+		for (; previousTimeoutId <= currentTimeoutId;previousTimeoutId++) clearTimeout(previousTimeoutId);
 		for (node of visited)
 			this.colorizeElement("node", node, config.nodeInactiveColor, config.nodeStrokeWidth);
 		for (line of path)
@@ -175,7 +176,7 @@ const Utils = {
 
 		function delayBy(callback, delay = 1) {
 			counter++;
-			timeout = setTimeout(() => {
+			currentTimeoutId = setTimeout(() => {
 				callback.call();
 			}, delay * 1000 * counter);
 		}
@@ -365,13 +366,13 @@ document.addEventListener("DOMContentLoaded", (e) => {
 
 	algoButtonsContainer.onclick = (e) => {
 		if (e.target.tagName == "BUTTON") {
-			algoButtonsContainer.classList.toggle("deactive");
-			const targetAlgorithm = e.target.dataset.algo;
+      const targetAlgorithm = e.target.dataset.algo;
 			const start = roadSelection[0];
 			const destination = roadSelection[1];
 			console.table(start, destination, targetAlgorithm);
 			if (start && destination && targetAlgorithm) {
-				Traversals[targetAlgorithm](start, destination);
+        algoButtonsContainer.classList.toggle("deactive");
+        Traversals[targetAlgorithm](start, destination);
 			}
 		}
 	};
