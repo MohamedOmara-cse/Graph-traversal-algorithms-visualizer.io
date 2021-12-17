@@ -10,37 +10,59 @@ const data = {
 		quesna: { cx: 3, cy: 25 },
 		tala: { cx: 45, cy: 15 },
 		berket: { cx: 45, cy: 45 },
+		shobra: { cx: 60, cy: 15 },
+		sabk: { cx: 60, cy: 35 },
+		shibra: { cx: 40, cy: 25 },
+		shibra: { cx: 40, cy: 25 },
+		shibra: { cx: 40, cy: 25 },
+		shibra: { cx: 40, cy: 25 },
+		shanwan: { cx: 70, cy: 25 },
 	},
 
 	config: {
-		nodeActiveColor: "red",
+		nodeActiveColor: "#40469d",
 		nodeStrokeColor: "green",
 		nodeStrokeWidth: "2px",
-		nodeRadius: 10,
+		activeStrokeWidth: "5px",
+		nodeRadius: 15,
 		nodeFillColor: "yellow",
 		nodeInactiveColor: "yellow",
-		lineActiveColor: "yellow",
+		lineActiveColor: "blue",
 		lineInActiveColor: "black",
 		lineWidth: "2px",
+		disableAlgoButtons: "gray",
+		enableAlgoButton: "#000000",
+		flowMessage: [
+			"Please choose the start Node",
+			"Bravoo, Now choose the Destination node",
+			"Awesome ,Finally hit the algorithm you need and stay focused",
+		],
 	},
 
 	roads: {
 		shibin: ["shohada", "menouf", "tala", "elbagour", "berket", "ashmon", "quesna", "elsadat"],
 		sirs: ["menouf", "elbagour"],
 		menouf: ["sirs", "shibin", "elsadat"],
-		elbagour: ["shibin", "sirs"],
+		elbagour: ["shibin", "sirs", "shobra"],
 		elsadat: ["shibin", "menouf"],
-		ashmon: ["shibin"],
+		ashmon: ["shibin", "shobra", "sabk", "shanwan"],
 		shohada: ["shibin"],
 		quesna: ["shibin"],
-		tala: ["shibin"],
-		berket: ["shibin"],
+		tala: ["shibin", "shobra"],
+		berket: ["shibin", "sabk"],
+		shobra: ["ashmon", "elbagour", "tala", "shanwan"],
+		sabk: ["berket", "ashmon", "shanwan"],
+		shanwan: ["shobra", "sabk", "ashmon"],
 	},
 
 	mapRoads: {
 		shibin: ["menouf", "tala", "elbagour", "shohada", "elsadat", "berket", "ashmon", "quesna"],
 		sirs: ["menouf", "elbagour"],
 		elsadat: ["menouf"],
+		ashmon: ["shobra", "sabk", "shanwan"],
+		berket: ["sabk"],
+		shobra: ["tala", "elbagour"],
+		shanwan: ["shobra", "sabk"],
 	},
 
 	distances: {
@@ -56,13 +78,16 @@ const data = {
 		},
 		sirs: { menouf: 4.2, elbagour: 7.1 },
 		menouf: { sirs: 4.2, shibin: 16.1, elsadat: 55.9 },
-		tala: { shibin: 18 },
-		berket: { shibin: 14 },
-		elbagour: { shibin: 14.9, sirs: 7.1 },
-		ashmon: { shibin: 42.2 },
+		tala: { shibin: 18, shobra: 20 },
+		berket: { shibin: 14, sabk: 22 },
+		elbagour: { shibin: 14.9, sirs: 7.1, shobra: 27 },
+		ashmon: { shibin: 42.2, shobra: 19, shanwan: 33, sabk: 24 },
 		quesna: { shibin: 18.1 },
 		elsadat: { shibin: 61.4, menouf: 54.5 },
 		shohada: { shibin: 17.5 },
+		shobra: { ashmon: 19, elbagour: 27, tala: 20, shanwan: 11 },
+		sabk: { berket: 22, ashmon: 24, shanwan: 23 },
+		shanwan: { shobra: 11, sabk: 23, ashmon: 33 },
 	},
 
 	Coordinates: {
@@ -76,14 +101,11 @@ const data = {
 		quesna: [30.5676, 31.14956],
 		elsadat: [30.36281, 30.53315],
 		shohada: [30.5976, 30.89575],
+		shanwan: [31.555, 31.345634],
+		shobra: [31.123546, 31.6754],
+		sabk: [31.4564, 31.7654],
 	},
 };
-
-Object.keys(data.Coordinates).forEach((node) => {
-	data.Coordinates[node] = data.Coordinates[node].map((coordinate) =>
-		Math.round((coordinate - 30) * 100)
-	);
-});
 
 class QElement {
 	constructor(node, priority) {
@@ -118,20 +140,32 @@ let path = new Set();
 let timeout;
 
 const Utils = {
-	colorizeElement: function (type, className, color) {
+	colorizeElement: function (type, className, color, strokehWidth = config.activeStrokeWidth) {
 		let elementProp = {
 			node: "fill",
 			line: "stroke",
 		};
 		document.querySelector(`.${className}`).style[elementProp[type]] = color;
+		document.querySelector(`.${className}`).style["stroke-width"] = strokehWidth;
 	},
-
+	corrdinatesProcess: function () {
+		Object.keys(data.Coordinates).forEach((node) => {
+			data.Coordinates[node] = data.Coordinates[node].map((coordinate) =>
+				Math.round((coordinate - 30) * 100)
+			);
+		});
+	},
 	resetNodesPath: function () {
-		for (let i = 0; i < timeout; i++) clearTimeout(i);
-		for (node of visited) this.colorizeElement("node", node, config.nodeInactiveColor);
-		for (line of path) this.colorizeElement("line", line, config.lineInActiveColor);
+		for (let i = 0; i <= timeout; i++) clearTimeout(i);
+		for (node of visited)
+			this.colorizeElement("node", node, config.nodeInactiveColor, config.nodeStrokeWidth);
+		for (line of path)
+			this.colorizeElement("line", line, config.lineInActiveColor, config.nodeStrokeWidth);
 	},
 
+	flowMessage: function (state) {
+		message.innerHTML = config.flowMessage[state];
+	},
 	debounce: function () {
 		let counter = 0;
 
@@ -162,20 +196,21 @@ const Utils = {
 		svg.appendChild(name);
 	},
 
-	addNodeCircle(id) {
+	addNodeCircle(name) {
 		const circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
-		const circleData = SVGNodesPositions[id];
+		const circleData = SVGNodesPositions[name];
 
 		let ratio = screen.width / (70 * (screen.width < 768 ? 1 : 2));
 
 		const circleConfig = {
-			class: id,
+			class: name,
 			cx: circleData.cx * ratio,
 			cy: circleData.cy * ratio,
 			r: config.nodeRadius,
 			fill: config.nodeInactiveColor,
 			stroke: config.nodeStrokeColor,
 			"stroke-width": config.nodeStrokeWidth,
+			cursor: "Pointer",
 		};
 		Object.keys(circleConfig).forEach((attribute) => {
 			circle.setAttribute(attribute, circleConfig[attribute]);
@@ -184,13 +219,15 @@ const Utils = {
 		svg.appendChild(circle);
 	},
 
-	addLineBetween(start, distination) {
+	addLineBetween(start, destination) {
+		let ratio = screen.width / (70 * (screen.width < 768 ? 1 : 2));
+
 		const lineConfig = {
-			x1: document.querySelector(`.${start}`).cx.animVal.value,
-			x2: document.querySelector(`.${distination}`).cx.animVal.value,
-			y1: document.querySelector(`.${start}`).cy.animVal.value,
-			y2: document.querySelector(`.${distination}`).cy.animVal.value,
-			class: `${start}-${distination} ${distination}-${start}`,
+			x1: SVGNodesPositions[start].cx * ratio,
+			x2: SVGNodesPositions[destination].cx * ratio,
+			y1: SVGNodesPositions[start].cy * ratio,
+			y2: SVGNodesPositions[destination].cy * ratio,
+			class: `${start}-${destination} ${destination}-${start}`,
 			stroke: config.lineInActiveColor,
 			"stroke-width": config.lineWidth,
 		};
@@ -208,7 +245,7 @@ const Utils = {
 		return Math.round(
 			Math.sqrt(
 				Math.pow(Math.abs(Coordinates[node][0] - Coordinates[destination][0]), 2) +
-				Math.pow(Math.abs(Coordinates[node][1] - Coordinates[destination][1]), 2)
+					Math.pow(Math.abs(Coordinates[node][1] - Coordinates[destination][1]), 2)
 			)
 		);
 	},
@@ -268,37 +305,79 @@ const Traversals = {
 					visited.add(child);
 					pQueue.enqueue(
 						child,
-						priority +
-						distances[node][child] +
-						Utils.calculateHeuristic(child, destination)
+						priority + distances[node][child] + Utils.calculateHeuristic(child, destination)
 					);
 				}
 		}
 	},
 };
 
-document.addEventListener("DOMContentLoaded", (event) => {
-	const svg = document.getElementById("svg");
+let roadSelection = [];
+const algoButtons = document.querySelector("#algorithmBtn");
+const messege = document.querySelector("#message");
+
+document.addEventListener("DOMContentLoaded", (e) => {
+	const resetButton = document.querySelector("#resetButton");
+	const svg = document.querySelector("svg");
+	const algoButtons = document.querySelector("#algorithmBtn");
+
+	let counterOfSelectedNode = 0;
+  Utils.corrdinatesProcess();
 	(function draw() {
+		for (node in mapRoads)
+			for (child in mapRoads[node]) Utils.addLineBetween(node, mapRoads[node][child]);
+
 		for (node in roads) {
 			Utils.addNodeCircle(node);
 			Utils.addNodeName(node);
 		}
-
-		for (node in mapRoads)
-			for (child in mapRoads[node]) Utils.addLineBetween(node, mapRoads[node][child]);
 	})();
 
-	document.getElementById("form").addEventListener("submit", (e) => {
-		const start = document.getElementById("startCities").value;
-		const distination = document.getElementById("distCities").value;
-		const chosenAlgorithm = document.getElementById("algorithem").value;
+	Utils.flowMessage(counterOfSelectedNode);
+	svg.onclick = (e) => {
+		if (e.target.tagName == "circle") {
+			const targetNode = e.target.classList.value;
+			if (counterOfSelectedNode < 2) {
+				roadSelection[counterOfSelectedNode++] = targetNode;
+				Utils.colorizeElement("line", targetNode, "blue");
+				Utils.flowMessage(counterOfSelectedNode);
+			}
+		}
+	};
 
+	resetButton.onclick = (e) => {
+		for (i in roadSelection) {
+			Utils.colorizeElement(
+				"line",
+				roadSelection[i],
+				config.nodeStrokeColor,
+				config.nodeStrokeWidth
+			);
+		}
+		roadSelection = [];
+		counterOfSelectedNode = 0;
+		if (algoButtons.disables == true) {
+			algoButtons.disables = false;
+		}
 		Utils.resetNodesPath();
 		visited.clear();
 		resetCounter();
-		Traversals[chosenAlgorithm](start, distination);
+	};
 
-		e.preventDefault();
-	});
+	console.log(algoButtons);
+	algoButtons.onclick = (e) => {
+		if (e.target.tagName == "BUTTON") {
+			const targetAlgorithm = e.target.dataset.algo;
+			const start = roadSelection[0];
+			const destination = roadSelection[1];
+			console.table(start, destination, targetAlgorithm);
+			if (start && destination && targetAlgorithm) {
+				algoButtons.style.disables = true;
+				console.log(algoButtons.childNodes.tag);
+				//	algoButtons.childNodes.style.backgroundColor = config.disableAlgoButtons;
+				Traversals[targetAlgorithm](start, destination);
+			}
+		}
+	};
+	e.preventDefault();
 });
