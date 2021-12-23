@@ -18,9 +18,11 @@ const Utils = {
 			} else targetElement.classList.toggle("activeLine");
 		}
 	},
-	edgeNodesMesageFunc: function (e, n) {
-		e.innerHTML = `${n} Edge Nodes selected`;
+
+	displayLineSelectionIndicator: function (n) {
+		edgeMessage.innerHTML = `${n} Edge Nodes selected`;
 	},
+
 	resetNodesPath: function () {
 		console.table(activeNodesSet, path);
 		for (; previousTimeoutId <= currentTimeoutId; previousTimeoutId++) clearTimeout(previousTimeoutId);
@@ -76,6 +78,7 @@ const Utils = {
 				name.setAttribute("x", circleConfig.cx - 5 * (node.length - 4));
 				name.setAttribute("y", circleConfig.cy + 5);
 				name.style.fontWeight = "bold";
+				name.style.cursor = "pointer";
 			} else {
 				name.innerHTML = node;
 				name.setAttribute("x", circleConfig.cx + 25);
@@ -119,10 +122,16 @@ const Utils = {
 		return Math.round(
 			Math.sqrt(
 				Math.pow(Math.abs(Coordinates[node][0] - Coordinates[destination][0]), 2) +
-					Math.pow(Math.abs(Coordinates[node][1] - Coordinates[destination][1]), 2)
+				Math.pow(Math.abs(Coordinates[node][1] - Coordinates[destination][1]), 2)
 			)
 		);
 	},
+
+	getIdentifierFromEventTarget(target) {
+		if (target.tagName == "circle") return target.classList.value.split(" ")[0];
+		else return 'node' + target.innerHTML;
+	}
+
 
 	/*	randomPosition: () => {
 		console.log(SVGNodesPositions);

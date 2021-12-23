@@ -1,40 +1,37 @@
 <!DOCTYPE html>
 <html lang="en">
-	<head>
-		<meta name="viewport" content="width=device-width, initial-scale=1" />
-		<title>Graph Traversal Algorithms</title>
-		<meta charset="UTF-8" />
-		<script src="travers.js"></script>
-		<script src="data.js"></script>
-		<script src="utils.js"></script>
-		<script src="map.js"></script>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Graph Traversal Algorithms</title>
+    <meta charset="UTF-8" />
+    <script defer src="travers.js"></script>
+    <script defer src="data.js"></script>
+    <script defer src="utils.js"></script>
+    <script defer src="map.js"></script>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <h1>Graph Traversal Visualizer</h1>
+    <div>
+      <div>
+        <p id="message"></p>
+      </div>
+      <div style="display: flex">
+        <div id="algorithmBtn">
+          <button id="dfsButton" data-algo="dfs">DFS</button>
+          <button id="bfsButton" data-algo="bfs">BFS</button>
+          <button id="astarButton" data-algo="astar">A*</button>
+        </div>
 
-		<link rel="stylesheet" href="style.css" />
-	</head>
-	<body>
-		<h1>Graph Traversal Visualizer</h1>
-		<div>
-			<div>
-				<p id="message"></p>
-			</div>
-			<div style="display: flex">
-				<div id="algorithmBtn">
-					<button id="dfsButton" data-algo="dfs">DFS</button>
-					<button id="bfsButton" data-algo="bfs">BFS</button>
-					<button id="astarButton" data-algo="astar">A*</button>
-				</div>
-
-				<button id="resetButton">reset Path</button>
-				<button id="generateGraph"> Draw graph</button>
-			</div>
-		</div>
-		<svg id="svg"></svg>
-		<div id="userInputNodeDiv"  style="display: none;">	
-			<button id="saveNodes" >Save</button>
-			<p id="edgeMessage"> </p>
-			<svg id="svg2"></svg>
-		</div>
-		
-
-	</body>
+        <button id="resetButton">reset Path</button>
+        <button id="generateGraph">Draw graph</button>
+      </div>
+    </div>
+    <svg id="svg"></svg>
+    <div id="userInputNodeDiv" style="display: none">
+      <button id="saveNodes">Save</button>
+      <p id="edgeMessage"></p>
+      <svg id="svg2"></svg>
+    </div>
+  </body>
 </html>
