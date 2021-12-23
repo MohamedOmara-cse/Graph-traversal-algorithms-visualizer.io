@@ -1,4 +1,6 @@
- const data = {
+let data = {
+	userNodes:{},
+	userNodesEdges:{},
 	SVGNodesPositions: {
 		shibin: { cx: 32, cy: 25 },
 		sirs: { cx: 25, cy: 3 },
@@ -12,10 +14,6 @@
 		berket: { cx: 45, cy: 45 },
 		shobra: { cx: 60, cy: 15 },
 		sabk: { cx: 60, cy: 35 },
-		shibra: { cx: 40, cy: 25 },
-		shibra: { cx: 40, cy: 25 },
-		shibra: { cx: 40, cy: 25 },
-		shibra: { cx: 40, cy: 25 },
 		shanwan: { cx: 70, cy: 25 },
 	},
 

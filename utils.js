@@ -1,26 +1,38 @@
+let activeNodesSet = new Set();
 const Utils = {
-	colorizeElement: function (type, className, color, strokehWidth = config.activeStrokeWidth) {
-		let elementProp = {
-			node: "fill",
-			line: "stroke",
-		};
-		document.querySelector(`.${className}`).style[elementProp[type]] = color;
-		document.querySelector(`.${className}`).style["stroke-width"] = strokehWidth;
+	colorizeElement: function (type, className, target) {
+		const targetElement = document.querySelector(`.${className}`);
+		if (type == "node")
+			if (target == "select") targetElement.classList.toggle("selectNode");
+			else if (target == "active") {
+				activeNodesSet.add(className);
+				targetElement.classList.toggle("activeNode");
+			} else {
+				targetElement.classList.remove("selectNode");
+				targetElement.classList.remove("activeNode");
+			}
+		else {
+			if (target == "active") {
+				targetElement.classList.toggle("activeLine");
+				path.add(className);
+			} else targetElement.classList.toggle("activeLine");
+		}
+	},
+	edgeNodesMesageFunc: function (e, n) {
+		e.innerHTML = `${n} Edge Nodes selected`;
+	},
+	resetNodesPath: function () {
+		console.table(activeNodesSet, path);
+		for (; previousTimeoutId <= currentTimeoutId; previousTimeoutId++) clearTimeout(previousTimeoutId);
+		for (node of activeNodesSet) this.colorizeElement("node", node, "inactive");
+		for (line of path) this.colorizeElement("line", line);
+		activeNodesSet.clear();
+		path.clear();
 	},
 	corrdinatesProcess: function () {
 		Object.keys(data.Coordinates).forEach((node) => {
-			data.Coordinates[node] = data.Coordinates[node].map((coordinate) =>
-				Math.round((coordinate - 30) * 100)
-			);
+			data.Coordinates[node] = data.Coordinates[node].map((coordinate) => Math.round((coordinate - 30) * 100));
 		});
-	},
-	resetNodesPath: function () {
-		for (; previousTimeoutId <= currentTimeoutId; previousTimeoutId++)
-			clearTimeout(previousTimeoutId);
-		for (node of visited)
-			this.colorizeElement("node", node, config.nodeInactiveColor, config.nodeStrokeWidth);
-		for (line of path)
-			this.colorizeElement("line", line, config.lineInActiveColor, config.nodeStrokeWidth);
 	},
 
 	flowMessage: function (state) {
@@ -46,60 +58,57 @@ const Utils = {
 		};
 	},
 
-	addNodeCircleWithName() {
+	addNodeCircleWithName: function (Nodes, svg) {
 		let ratio = screen.width / (70 * (screen.width < 768 ? 1 : 2));
 		let fragment = document.createDocumentFragment();
-		for (node in roads) {
+		for (let node in Nodes) {
 			const circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
 			const name = document.createElementNS("http://www.w3.org/2000/svg", "text");
-
-			const circleData = SVGNodesPositions[node];
+			const circleData = Nodes[node];
 			const circleConfig = {
 				class: node,
 				cx: circleData.cx * ratio,
 				cy: circleData.cy * ratio,
-				r: config.nodeRadius,
-				fill: config.nodeInactiveColor,
-				stroke: config.nodeStrokeColor,
-				"stroke-width": config.nodeStrokeWidth,
 				cursor: "Pointer",
 			};
-			name.setAttribute("x", circleConfig.cx + 25);
-			name.setAttribute("y", circleConfig.cy + -7);
-			name.innerHTML = node;
+			if (svg.id == "svg2") {
+				name.innerHTML = node.split("node")[1];
+				name.setAttribute("x", circleConfig.cx - 5 * (node.length - 4));
+				name.setAttribute("y", circleConfig.cy + 5);
+				name.style.fontWeight = "bold";
+			} else {
+				name.innerHTML = node;
+				name.setAttribute("x", circleConfig.cx + 25);
+				name.setAttribute("y", circleConfig.cy + -7);
+			}
 			Object.keys(circleConfig).forEach((attribute) => {
 				circle.setAttribute(attribute, circleConfig[attribute]);
 			});
-
+			circle.classList.toggle("inactiveNode");
 			fragment.appendChild(circle);
 			fragment.append(name);
 		}
+
 		svg.appendChild(fragment);
 	},
 
-	addLineBetween() {
+	addLineBetween(Edges, Nodes, svg) {
 		let ratio = screen.width / (70 * (screen.width < 768 ? 1 : 2));
 		let fragment = document.createDocumentFragment();
-		for (node in mapRoads)
-			for (child of mapRoads[node]) {
-			
+		for (let node in Edges)
+			for (let child of Edges[node]) {
 				const lineConfig = {
-					x1: SVGNodesPositions[node].cx * ratio,
-					x2: SVGNodesPositions[child].cx * ratio,
-					y1: SVGNodesPositions[node].cy * ratio,
-					y2: SVGNodesPositions[child].cy * ratio,
+					x1: Nodes[node].cx * ratio,
+					x2: Nodes[child].cx * ratio,
+					y1: Nodes[node].cy * ratio,
+					y2: Nodes[child].cy * ratio,
 					class: `${node}-${child} ${child}-${node}`,
-					stroke: config.lineInActiveColor,
-					"stroke-width": config.lineWidth,
 				};
-
 				const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
-
 				Object.keys(lineConfig).forEach((attribute) => {
 					line.setAttribute(attribute, `${lineConfig[attribute]}`);
 				});
-
-				
+				line.classList.toggle("inactiveLine");
 				fragment.appendChild(line);
 			}
 
@@ -114,4 +123,15 @@ const Utils = {
 			)
 		);
 	},
+
+	/*	randomPosition: () => {
+		console.log(SVGNodesPositions);
+		for (node in SVGNodesPositions) {
+		
+			console.log(SVGNodesPositions[node]["cx"]);
+			SVGNodesPositions[node]["cx"] = Math.floor(Math.random() * 100);
+			SVGNodesPositions[node]["cy"] = Math.floor(Math.random() * 50 );
+		}
+	},
+	*/
 };

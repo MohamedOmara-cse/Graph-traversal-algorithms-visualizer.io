@@ -3,6 +3,32 @@ body {
 	background-color: rgb(3, 4, 33);
 }
 
+.inactiveNode {
+	r: 17px;
+	fill: yellow;
+	stroke: green;
+	stroke-width: 2px;
+}
+.activeNode {
+	fill: #40469d;
+	stroke: #3840ac;
+	stroke-width: 5px;
+}
+.selectNode {
+	r: 17px;
+	fill: #40469d;
+	stroke: #020424;
+	stroke-width: 5px;
+}
+.inactiveLine {
+	stroke: black;
+	stroke-width: 2px;
+}
+.activeLine {
+	stroke: #40469d;
+	stroke-width: 5px;
+}
+
 svg {
 	width: 60%;
 	margin: 15px auto;
@@ -39,14 +65,15 @@ button {
 	background-color: rgb(0, 0, 0);
 	width: 100px;
 	border-radius: 12px;
-	box-shadow: 5px 5px 20px  #eec4c4;
+	box-shadow: 5px 5px 20px #eec4c4;
 }
 button:hover {
 	background-color: rgb(0, 25, 78) !important;
-		box-shadow: 0px 0px 0px  #eec4c4;
-	
+	box-shadow: 0px 0px 0px #eec4c4;
 }
-
+p{
+	color: aliceblue;
+}
 h1 {
 	text-align: center;
 	margin: 10px auto 15px auto;
@@ -62,15 +89,19 @@ form div {
 #resetButton {
 	margin-left: 100px;
 }
-
-div.deactive button {
+.deactiveSave{
 	pointer-events: none;
-	background-color: gray;
+	background-color: rgb(179, 179, 216);
 }
-@media screen and (max-width: 1300px) {
+
+div.deactive,div.deactive button ,button.deactive {
+	pointer-events: none;
+	background-color: rgb(14, 14, 102);
+}
+@media screen and (max-width: 1100px) {
 	svg {
 		width: 100%;
-		height: calc(70vh);
+		height: calc(80vh - 10px);
 	}
 
 	h1 {

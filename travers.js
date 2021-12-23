@@ -26,64 +26,52 @@ class PriorityQueue {
 }
 
 const Traversals = {
-	dfs: function (start, destination) {
+	dfs: function (start, destination, Nodes) {
 		visited.add(start);
-		delayBy(() => Utils.colorizeElement("node", start, config.nodeActiveColor));
+		delayBy(() => Utils.colorizeElement("node", start, "active"));
 		if (start == destination) return true;
-		for (const child of roads[start])
+		console.table(start, destination);
+		for (let child of Nodes[start])
 			if (!visited.has(child)) {
-				path.add(`${start}-${child}`);
-				delayBy(() => Utils.colorizeElement("line", `${start}-${child}`, config.lineActiveColor));
+				//path.add(`${start}-${child}`);
+				delayBy(() => Utils.colorizeElement("line", `${start}-${child}`, "active"));
 				visited.add(child);
-				if (this.dfs(child, destination, visited)) return true;
+				if (this.dfs(child, destination, Nodes)) return true;
 			}
 	},
 
-	bfs: function (start, distination) {
+	bfs: function (start, distination, Nodes) {
 		const queue = [start];
 		while (queue.length) {
 			const node = queue.shift();
 			visited.add(node);
-			delayBy(() => Utils.colorizeElement("node", node, config.nodeActiveColor));
+			delayBy(() => Utils.colorizeElement("node", node, "active"));
 			if (node == distination) return true;
-			for (const child of roads[node])
+			for (const child of Nodes[node])
 				if (!visited.has(child)) {
-					path.add(`${node}-${child}`);
-					delayBy(
-						() => Utils.colorizeElement("line", `${node}-${child}`, config.lineActiveColor),
-						1
-					);
+					////;
+					delayBy(() => Utils.colorizeElement("line", `${node}-${child}`, "active"), 1);
 					visited.add(child);
 					queue.push(child);
 				}
 		}
 	},
 
-	astar: function (start, destination) {
+	astar: function (start, destination, Nodes) {
 		pQueue = new PriorityQueue();
 		pQueue.enqueue(start, 0 + Utils.calculateHeuristic(start, destination));
 		while (pQueue.items.length) {
 			const { node, priority } = pQueue.items.shift();
 			visited.add(node);
-			delayBy(() => Utils.colorizeElement("node", node, config.nodeActiveColor));
+			delayBy(() => Utils.colorizeElement("node", node, "active"));
 			if (node == destination) return true;
-			for (const child of roads[node])
+			for (const child of Nodes[node])
 				if (!visited.has(child)) {
-					path.add(`${node}-${child}`);
-					delayBy(
-						() => Utils.colorizeElement("line", `${node}-${child}`, config.lineActiveColor),
-						1
-					);
+					//path.add(`${node}-${child}`);
+					delayBy(() => Utils.colorizeElement("line", `${node}-${child}`, "active"), 1);
 					visited.add(child);
-					pQueue.enqueue(
-						child,
-						priority + distances[node][child] + Utils.calculateHeuristic(child, destination)
-					);
+					pQueue.enqueue(child, priority + distances[node][child] + Utils.calculateHeuristic(child, destination));
 				}
 		}
 	},
 };
-
-let roadSelection = [];
-const algoButtons = document.querySelector("#algorithmBtn");
-const messege = document.querySelector("#message");
