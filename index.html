@@ -15,21 +15,22 @@
     <div>
       <div>
         <p id="message"></p>
-      </div>
+     
       <div style="display: flex">
-        <div id="algorithmBtn">
+        <section id="algorithmBtn">
           <button id="dfsButton" data-algo="dfs">DFS</button>
           <button id="bfsButton" data-algo="bfs">BFS</button>
           <button id="astarButton" data-algo="astar">A*</button>
-        </div>
-
-        <button id="resetButton">reset Path</button>
-        <button id="generateGraph">Draw graph</button>
-      </div>
-    </div>
+				</section>
+        <section>
+        <button id="resetButton">Reset</button>
+				<button id="saveNodes">Save</button>
+        <button id="generateGraph">Draw </button>
+      </section>
+			</div>
+   
     <svg id="svg"></svg>
     <div id="userInputNodeDiv" style="display: none">
-      <button id="saveNodes">Save</button>
       <p id="edgeMessage"></p>
       <svg id="svg2"></svg>
     </div>

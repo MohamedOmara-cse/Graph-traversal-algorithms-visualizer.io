@@ -1,8 +1,10 @@
 body {
 	font-family: sans-serif;
-	background-color: rgb(3, 4, 33);
+	background-color: rgb(7, 7, 68);
 }
-
+#svg{
+	margin-top: 3em;
+}
 .inactiveNode {
 	r: 17px;
 	fill: yellow;
@@ -55,7 +57,13 @@ div {
 	justify-content: center;
 	text-align: center;
 }
+section{
+	display: flex;
+		text-align: center;
 
+	justify-content: center;
+	align-items: center;
+}
 button {
 	margin: 10px;
 	font-size: 20px;
@@ -63,7 +71,7 @@ button {
 	font-weight: bold;
 	height: 50px;
 	background-color: rgb(0, 0, 0);
-	width: 100px;
+	width: 70px;
 	border-radius: 12px;
 	box-shadow: 5px 5px 20px #eec4c4;
 }
@@ -92,11 +100,13 @@ form div {
 .deactiveSave{
 	pointer-events: none;
 	background-color: rgb(179, 179, 216);
+}text{
+	cursor: pointer;
+	font-weight: bold;
 }
-
-div.deactive,div.deactive button ,button.deactive {
+section.deactive,section.deactive button ,button.deactive {
 	pointer-events: none;
-	background-color: rgb(14, 14, 102);
+	background-color: rgb(10, 10, 70);
 }
 @media screen and (max-width: 1100px) {
 	svg {
