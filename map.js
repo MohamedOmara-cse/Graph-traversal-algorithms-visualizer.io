@@ -6,7 +6,7 @@ document.addEventListener("DOMContentLoaded", (e) => {
 		Utils.addLineBetween(roads, SVGNodesPositions, svg);
 		Utils.addNodeCircleWithName(SVGNodesPositions, svg);
 	})();
-	Utils.flowMessage(counterOfSelectedNode);
+	
 	svg.onclick = Utils.selectStartAndDestination;
 	resetButton.onclick = Utils.resetPath;
 	algoButtonsContainer.onclick = Utils.startTraversingGraph;

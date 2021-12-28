@@ -79,7 +79,7 @@ const Utils = {
 			if (counterOfSelectedNode < 2) {
 				Utils.colorizeElement("node", targetNode, "select");
 				roadSelection[counterOfSelectedNode++] = targetNode;
-				Utils.flowMessage(counterOfSelectedNode);
+			
 			}
 		}
 	},
