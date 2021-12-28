@@ -9,7 +9,7 @@ let userNodeNumber = 0;
 const algoButtons = document.querySelector("#algorithmBtn");
 const messege = document.querySelector("#message");
 let isDone = false;
-let ratio = screen.width / (75 * (screen.width < 768 ? 1 : 2));
+let ratio = screen.width / (95* (screen.width < 768 ? 1 : 2));
 const algoButtonsContainer = document.querySelector("#algorithmBtn");
 const resetButton = document.querySelector("#resetButton");
 const generateButton = document.getElementById("generateGraph");
@@ -41,7 +41,7 @@ const Utils = {
 			if (!isDone) {
 				lineNodesNames.push(chosenNodeName);
 				if (lineNodesNames.length > 2) lineNodesNames = [];
-				
+
 				Utils.colorizeElement("node", chosenNodeName, "select");
 				if (lineNodesNames.length == 2) {
 					let [firstNode, secondNode] = lineNodesNames;
@@ -56,7 +56,6 @@ const Utils = {
 					}
 
 					lineNodesNames = [];
-					
 				}
 			} else {
 				if (counterOfSelectedNode < 2) {
@@ -176,7 +175,7 @@ const Utils = {
 	},
 
 	addNodeCircleWithName: function (Nodes, svg) {
-		let ratio = screen.width / (75 * (screen.width < 768 ? 1 : 2));
+		let ratio = screen.width / (95* (screen.width < 768 ? 1 : 2));
 		let fragment = document.createDocumentFragment();
 		for (let node in Nodes) {
 			const circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
@@ -209,7 +208,7 @@ const Utils = {
 	},
 
 	addLineBetween(Edges, Nodes, svg) {
-		let ratio = screen.width / (75 * (screen.width < 768 ? 1 : 2));
+		let ratio = screen.width / (95* (screen.width < 768 ? 1 : 2));
 		let fragment = document.createDocumentFragment();
 		for (let node in Edges)
 			for (let child of Edges[node]) {
