@@ -22,7 +22,7 @@ let data = {
 		nodeStrokeColor: "green",
 		nodeStrokeWidth: "2px",
 		activeStrokeWidth: "5px",
-		nodeRadius: 15,
+		nodeRadius: "10px",
 		nodeFillColor: "yellow",
 		nodeInactiveColor: "yellow",
 		lineActiveColor: "blue",
@@ -32,8 +32,8 @@ let data = {
 		enableAlgoButton: "#000000",
 		flowMessage: [
 			"Choose the start Node",
-			"Bravoo, Now choose the Destination node",
-			"Awesome ,Finally hit the algorithm you need and stay focused",
+			"Now choose the Destination node",
+			"Finally hit the algorithm you need and stay focused",
 		],
 	},
 

@@ -4,7 +4,7 @@ body {
 margin:0;
 }
 .inactiveNode {
-	r: 17px;
+	r: 15px;
 	fill: yellow;
 	stroke: green;
 	stroke-width: 2px;
@@ -15,7 +15,7 @@ margin:0;
 	stroke-width: 5px;
 }
 .selectNode {
-	r: 17px;
+
 	fill: #40469d;
 	stroke: #020424;
 	stroke-width: 5px;
@@ -121,7 +121,8 @@ section.deactive,section.deactive button ,button.deactive {
 		width: 100%;
 		font-size: 25px;
 	}
-
+.inactiveNode {
+	r: 10px;}
 	div {
 		margin-right: 0;
 		width: 100%;
