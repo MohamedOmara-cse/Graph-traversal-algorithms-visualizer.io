@@ -6,27 +6,21 @@ document.addEventListener("DOMContentLoaded", (e) => {
 		Utils.addLineBetween(roads, SVGNodesPositions, svg);
 		Utils.addNodeCircleWithName(SVGNodesPositions, svg);
 	})();
-
 	Utils.flowMessage(counterOfSelectedNode);
-
 	svg.onclick = Utils.selectStartAndDestination;
-
 	resetButton.onclick = Utils.resetPath;
 	algoButtonsContainer.onclick = Utils.startTraversingGraph;
-
-
-	generateButton.onclick = Utils.generateNewGragh;
-
+	
+	generateButton.onclick = Utils.generateNewGraph;
 	Utils.displayLineSelectionIndicator(lineNodesNames.length);
-
 	svg2.onclick = Utils.userInputGeneration;
+
 	saveButton.onclick = () => {	
 			isDone = true;
 			saveButton.classList.add("deactiveSave");
 			svg2.innerHTML = "";
 			Utils.addLineBetween(userNodesEdges, userNodes, svg2);
 			Utils.addNodeCircleWithName(userNodes, svg2);
-
 	};
 
 	svg2.ondblclick = (e) => {

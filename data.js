@@ -14,7 +14,7 @@ let data = {
 		berket: { cx: 45, cy: 45 },
 		shobra: { cx: 60, cy: 15 },
 		sabk: { cx: 60, cy: 35 },
-		shanwan: { cx: 70, cy: 25 },
+		shanwan: { cx: 60, cy: 25 },
 	},
 
 	config: {

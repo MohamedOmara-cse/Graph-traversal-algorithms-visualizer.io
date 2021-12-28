@@ -9,7 +9,7 @@ let userNodeNumber = 0;
 const algoButtons = document.querySelector("#algorithmBtn");
 const messege = document.querySelector("#message");
 let isDone = false;
-let ratio = screen.width / (70 * (screen.width < 768 ? 1 : 2));
+let ratio = screen.width / (75 * (screen.width < 768 ? 1 : 2));
 const algoButtonsContainer = document.querySelector("#algorithmBtn");
 const resetButton = document.querySelector("#resetButton");
 const generateButton = document.getElementById("generateGraph");
@@ -27,6 +27,7 @@ const Utils = {
 			if (styleClass == "activeLine") path.add(className);
 		} else {
 			targetElement.classList.remove(`active${type.charAt(0).toUpperCase() + type.slice(1)}`);
+			targetElement.classList.remove(`select${type.charAt(0).toUpperCase() + type.slice(1)}`);
 		}
 	},
 	userInputGeneration: function (e) {
@@ -41,7 +42,7 @@ const Utils = {
 				lineNodesNames.push(chosenNodeName);
 				if (lineNodesNames.length > 2) lineNodesNames = [];
 				Utils.displayLineSelectionIndicator(lineNodesNames.length);
-
+				Utils.colorizeElement("node", chosenNodeName, "select");
 				if (lineNodesNames.length == 2) {
 					let [firstNode, secondNode] = lineNodesNames;
 
@@ -50,6 +51,8 @@ const Utils = {
 						userNodesEdges[firstNode].add(secondNode);
 
 						Utils.addLineBetween({ [firstNode]: [secondNode] }, userNodes, svg2);
+						Utils.colorizeElement("node", firstNode, "deactive");
+						Utils.colorizeElement("node", secondNode, "deactive");
 					}
 
 					lineNodesNames = [];
@@ -109,7 +112,7 @@ const Utils = {
 		saveButton.classList.remove("deactiveSave");
 	},
 
-	generateNewGragh: function () {
+	generateNewGraph: function () {
 		svg.style.display = "none";
 		isDone = false;
 		userInputNodesDiv.style.display = "block";
@@ -173,7 +176,7 @@ const Utils = {
 	},
 
 	addNodeCircleWithName: function (Nodes, svg) {
-		let ratio = screen.width / (70 * (screen.width < 768 ? 1 : 2));
+		let ratio = screen.width / (75 * (screen.width < 768 ? 1 : 2));
 		let fragment = document.createDocumentFragment();
 		for (let node in Nodes) {
 			const circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
@@ -206,7 +209,7 @@ const Utils = {
 	},
 
 	addLineBetween(Edges, Nodes, svg) {
-		let ratio = screen.width / (70 * (screen.width < 768 ? 1 : 2));
+		let ratio = screen.width / (75 * (screen.width < 768 ? 1 : 2));
 		let fragment = document.createDocumentFragment();
 		for (let node in Edges)
 			for (let child of Edges[node]) {
