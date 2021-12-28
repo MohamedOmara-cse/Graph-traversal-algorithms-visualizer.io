@@ -31,7 +31,7 @@ let data = {
 		disableAlgoButtons: "gray",
 		enableAlgoButton: "#000000",
 		flowMessage: [
-			"Please choose the start Node",
+			"Choose the start Node",
 			"Bravoo, Now choose the Destination node",
 			"Awesome ,Finally hit the algorithm you need and stay focused",
 		],
