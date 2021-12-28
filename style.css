@@ -48,7 +48,6 @@ svg {
 }
 div {
 	text-align: center;
-
 	justify-content: center;
 	align-items: center;
 }
@@ -58,9 +57,9 @@ div {
 	text-align: center;
 }
 section{
-	margin-left: 40px;
+	margin: 40px;
 	display: flex;
-	 flex-wrap: wrap;
+	flex-wrap: wrap;
 	text-align: center;
 	justify-content: center;
 	align-items: center;
@@ -99,6 +98,7 @@ form div {
 }
 .deactiveSave{
 	pointer-events: none;
+	color:black;
 	background-color: rgb(179, 179, 216);
 }text{
 	cursor: pointer;

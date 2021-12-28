@@ -10,17 +10,17 @@ document.addEventListener("DOMContentLoaded", (e) => {
 	svg.onclick = Utils.selectStartAndDestination;
 	resetButton.onclick = Utils.resetPath;
 	algoButtonsContainer.onclick = Utils.startTraversingGraph;
-	
+
 	generateButton.onclick = Utils.generateNewGraph;
-	Utils.displayLineSelectionIndicator(lineNodesNames.length);
+	
 	svg2.onclick = Utils.userInputGeneration;
 
-	saveButton.onclick = () => {	
-			isDone = true;
-			saveButton.classList.add("deactiveSave");
-			svg2.innerHTML = "";
-			Utils.addLineBetween(userNodesEdges, userNodes, svg2);
-			Utils.addNodeCircleWithName(userNodes, svg2);
+	saveButton.onclick = () => {
+		isDone = true;
+		saveButton.classList.add("deactiveSave");
+		svg2.innerHTML = "";
+		Utils.addLineBetween(userNodesEdges, userNodes, svg2);
+		Utils.addNodeCircleWithName(userNodes, svg2);
 	};
 
 	svg2.ondblclick = (e) => {
@@ -44,7 +44,7 @@ function mouseEventsHandler(e) {
 		Utils.colorizeElement("node", chosenNodeName, "select");
 		console.log(chosenNodeName);
 		lineNodesNames.push(chosenNodeName);
-		Utils.displayLineSelectionIndicator(lineNodesNames.length);
+		
 		if (lineNodesNames.length == 2) {
 			let [firstNode, secondNode] = lineNodesNames;
 			if (firstNode != secondNode) {
@@ -57,7 +57,7 @@ function mouseEventsHandler(e) {
 				);
 			}
 			lineNodesNames = [];
-			Utils.displayLineSelectionIndicator(lineNodesNames.length);
+			
 		}
 	}
 }

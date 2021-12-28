@@ -41,7 +41,7 @@ const Utils = {
 			if (!isDone) {
 				lineNodesNames.push(chosenNodeName);
 				if (lineNodesNames.length > 2) lineNodesNames = [];
-				Utils.displayLineSelectionIndicator(lineNodesNames.length);
+				
 				Utils.colorizeElement("node", chosenNodeName, "select");
 				if (lineNodesNames.length == 2) {
 					let [firstNode, secondNode] = lineNodesNames;
@@ -56,7 +56,7 @@ const Utils = {
 					}
 
 					lineNodesNames = [];
-					Utils.displayLineSelectionIndicator(lineNodesNames.length);
+					
 				}
 			} else {
 				if (counterOfSelectedNode < 2) {
