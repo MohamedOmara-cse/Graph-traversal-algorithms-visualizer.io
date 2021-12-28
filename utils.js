@@ -189,7 +189,7 @@ const Utils = {
 			};
 			const svgId = svg.id;
 			const nameConfig = {
-				svg: { x: circleConfig.cx + 25, y: circleConfig.cy - 7, inner: node },
+				svg: { x: circleConfig.cx + 20, y: circleConfig.cy - 7, inner: node },
 				svg2: { x: circleConfig.cx - 5 * (node.length - 4), y: circleConfig.cy + 5, inner: node.split("node")[1] },
 			};
 			name.setAttribute("x", nameConfig[svgId].x);
